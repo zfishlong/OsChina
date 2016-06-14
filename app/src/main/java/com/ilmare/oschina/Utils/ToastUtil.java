@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 public class ToastUtil {
+
 	private static Toast toast;
 	/**
 	 * 能够连续弹的吐司，不会等上个吐司消失

@@ -3,10 +3,78 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/main_green</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+
     </style>
+
+
+    <!--actionBar状态 -->
+    <style name="ActionBarBaseTheme" parent="@style/Theme.AppCompat.Light">
+        <!-- 设置应用程序背景色#EBEBEB 灰色 -->
+        <item name="android:windowBackground">@color/window_background</item>
+        <!--设置ActionBar样式 -->
+        <item name="android:actionBarStyle">@style/ActionBarBaseStyle</item>
+        <!--弹出菜单的样式 -->
+        <item name="android:popupMenuStyle">@style/PopupMenu.ListPopupWindow</item>
+        <!--更多菜单的按钮样式 , 针对没有菜单按键的设备-->
+        <item name="android:actionOverflowButtonStyle">@style/OverflowButton</item>
+        <!--ActionBar条目背景选择器 -->
+        <item name="android:actionBarItemBackground">
+            @drawable/socialize_titlebar_item_background_selector
+        </item>
+
+        <!--ActionBar条目菜单文本颜色-->
+        <item name="android:actionMenuTextColor">@color/white</item>
+
+        <!--弹出菜单ListView的样式 -->
+        <item name="android:dropDownListViewStyle">@style/SpinnerDropDownListView</item>
+        <item name="popupMenuStyle">@style/mylistPopupWindowStyle</item>
+    </style>
+
+    <style name="SpinnerDropDownListView" parent="@style/Widget.AppCompat.Light.ListView.DropDown">
+        <item name="android:divider">#3f3f3f</item>
+        <item name="android:dividerHeight">1dp</item>
+    </style>
+
+    <style name="OverflowButton" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:src">@mipmap/actionbar_more_icon_normal</item>
+    </style>
+
+    <style name="PopupMenu.ListPopupWindow" parent="@style/Widget.AppCompat.Light.ListPopupWindow">
+        <!--<item name="android:popupBackground">@color/menu_dropdown_panel_dark</item>-->
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="mylistPopupWindowStyle" parent="@style/Widget.AppCompat.Light.PopupMenu">
+        <item name="android:dropDownSelector">#343434</item>
+        <item name="android:popupBackground">#343434</item>
+    </style>
+
+    <style name="ActionBarBaseStyle" parent="@style/Theme.AppCompat.Light">
+        <!--ActionBar 背景, 绿色#40AA53 -->
+        <item name="colorPrimary">@color/main_green</item>
+        <item name="android:background">@color/actionbar_background</item>
+        <!--ActionBar 标题文字样式, 白色 -->
+        <item name="android:titleTextStyle">@style/TitleStyle</item>
+        <!--ActionBar 图标, 透明 -->
+        <item name="android:icon">@android:color/transparent</item>
+        <!--ActionBar 副标题样式, 白色 -->
+        <item name="android:subtitleTextStyle">@style/SubTitle</item>
+    </style>
+
+    <style name="TitleStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="SubTitle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="DialogBaseTheme" parent="@style/Theme.AppCompat.DialogWhenLarge"></style>
+
 
     <!-- app main menu style start! -->
     <!-- 菜单layout的样式 -->
