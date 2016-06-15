@@ -2,12 +2,13 @@ package com.ilmare.oschina.UI;
 
 
 import com.ilmare.oschina.Fragment.DefaultFragment;
+import com.ilmare.oschina.Fragment.ZongHeFragment;
 import com.ilmare.oschina.R;
 
 public enum MainTab {
 
 	NEWS(0, R.string.main_tab_name_news, R.drawable.tab_icon_new,
-			DefaultFragment.class),
+			ZongHeFragment.class),
 
 	TWEET(1, R.string.main_tab_name_tweet, R.drawable.tab_icon_tweet,
 			DefaultFragment.class),
