@@ -25,7 +25,7 @@ public class ZongHePagerFragment extends BaseViewPagerFragment {
     @Override
     public void setPagerData(BaseViewPagerAdapter fragmentAdapter) {
         stringArray = getActivity().getResources().getStringArray(R.array.news_viewpage_arrays);
-        fragmentAdapter.setPagerData(new FragmentInfo(DefaultFragment.class,getBundle(stringArray[0])), stringArray[0]);
+        fragmentAdapter.setPagerData(new FragmentInfo(NewsFragment.class,getBundle(stringArray[0])), stringArray[0]);
         fragmentAdapter.setPagerData(new FragmentInfo(DefaultFragment.class,getBundle(stringArray[1])), stringArray[1]);
         fragmentAdapter.setPagerData(new FragmentInfo(DefaultFragment.class,getBundle(stringArray[2])), stringArray[2]);
         fragmentAdapter.setPagerData(new FragmentInfo(DefaultFragment.class,getBundle(stringArray[3])), stringArray[3]);

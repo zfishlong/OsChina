@@ -25,6 +25,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile files('libs/xstream-1.4.7.jar')
     compile 'com.jakewharton:butterknife:5.1.1'
-    compile files('libs/android-async-http-1.4.6.jar')
     compile files('libs/KJFrameForAndroid_v2.223.jar')
+    compile files('libs/android-async-http-master.jar')
 }

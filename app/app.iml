@@ -94,12 +94,12 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="support-vector-drawable-23.3.0" level="project" />
     <orderEntry type="library" exported="" name="animated-vector-drawable-23.3.0" level="project" />
+    <orderEntry type="library" exported="" name="android-async-http-master" level="project" />
     <orderEntry type="library" exported="" name="xstream-1.4.7" level="project" />
     <orderEntry type="library" exported="" name="butterknife-5.1.1" level="project" />
     <orderEntry type="library" exported="" name="support-v4-23.3.0" level="project" />
     <orderEntry type="library" exported="" name="KJFrameForAndroid_v2.223" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.3.0" level="project" />
-    <orderEntry type="library" exported="" name="android-async-http-1.4.6" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.3.0" level="project" />
   </component>
 </module>
