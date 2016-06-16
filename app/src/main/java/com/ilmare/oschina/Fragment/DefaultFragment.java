@@ -19,9 +19,9 @@ import butterknife.InjectView;
  * A simple {@link Fragment} subclass. Use the
  * {@link DefaultFragment#newInstance} factory method to create an instance of
  * this fragment.
- * 
  */
 public class DefaultFragment extends Fragment {
+
 	private String mParam1;
 	
 	@InjectView(R.id.tv_content)
@@ -59,7 +59,7 @@ public class DefaultFragment extends Fragment {
 		}else {
 			tv_content.setText(mParam1);
 		}
-				
+
 	}
 
 }

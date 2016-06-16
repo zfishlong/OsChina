@@ -17,7 +17,7 @@ import com.ilmare.oschina.R;
  * ===============================
  */
 
-public class ZongHeFragment extends BaseViewPagerFragment {
+public class ZongHePagerFragment extends BaseViewPagerFragment {
 
 
     private String[] stringArray;
