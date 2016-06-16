@@ -1,5 +1,6 @@
 package com.ilmare.oschina.Adapter;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -18,23 +19,28 @@ import java.util.ArrayList;
 
 public class BaseViewPagerAdapter extends FragmentPagerAdapter {
 
-    ArrayList<Fragment> fragments;
-    ArrayList<String> titles;
+   private ArrayList<FragmentInfo> fragmentInfos;
 
-    public BaseViewPagerAdapter(FragmentManager fm) {
+    private  ArrayList<String> titles;
+
+    private Context mContext;
+    public BaseViewPagerAdapter(Context mContext,FragmentManager fm) {
         super(fm);
-        fragments=new ArrayList<>();
+        this.mContext=mContext;
+        fragmentInfos=new ArrayList<>();
         titles=new ArrayList<>();
+
     }
 
-    public void setPagerData(Fragment fragment,String title){
-        fragments.add(fragment);
+    public void setPagerData(FragmentInfo fragmentInfo,String title){
+        fragmentInfos.add(fragmentInfo);
         titles.add(title);
     }
 
     @Override
     public Fragment getItem(int position) {
-        return fragments.get(position);
+        FragmentInfo info=fragmentInfos.get(position);
+        return Fragment.instantiate(mContext,info.getClazz().getName(),info.getBundle()) ;
     }
 
     @Override

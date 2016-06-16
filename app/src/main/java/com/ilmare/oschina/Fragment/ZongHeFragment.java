@@ -1,6 +1,9 @@
 package com.ilmare.oschina.Fragment;
 
+import android.os.Bundle;
+
 import com.ilmare.oschina.Adapter.BaseViewPagerAdapter;
+import com.ilmare.oschina.Adapter.FragmentInfo;
 import com.ilmare.oschina.Base.BaseViewPagerFragment;
 import com.ilmare.oschina.R;
 
@@ -21,12 +24,19 @@ public class ZongHeFragment extends BaseViewPagerFragment {
 
     @Override
     public void setPagerData(BaseViewPagerAdapter fragmentAdapter) {
-
         stringArray = getActivity().getResources().getStringArray(R.array.news_viewpage_arrays);
-        fragmentAdapter.setPagerData(new DefaultFragment(), stringArray[0]);
-        fragmentAdapter.setPagerData(new DefaultFragment(), stringArray[1]);
-        fragmentAdapter.setPagerData(new DefaultFragment(), stringArray[2]);
-        fragmentAdapter.setPagerData(new DefaultFragment(), stringArray[3]);
-
+        fragmentAdapter.setPagerData(new FragmentInfo(DefaultFragment.class,getBundle(stringArray[0])), stringArray[0]);
+        fragmentAdapter.setPagerData(new FragmentInfo(DefaultFragment.class,getBundle(stringArray[1])), stringArray[1]);
+        fragmentAdapter.setPagerData(new FragmentInfo(DefaultFragment.class,getBundle(stringArray[2])), stringArray[2]);
+        fragmentAdapter.setPagerData(new FragmentInfo(DefaultFragment.class,getBundle(stringArray[3])), stringArray[3]);
     }
+
+
+    private Bundle getBundle(String catalog) {
+        Bundle bundle = new Bundle();
+        bundle.putString("key", "我是综合里的: " + catalog);
+        return bundle;
+    }
+
+
 }

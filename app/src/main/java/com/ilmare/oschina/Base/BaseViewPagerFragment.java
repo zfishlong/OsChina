@@ -45,7 +45,7 @@ public abstract class BaseViewPagerFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         //创建数据
-        adapter = new BaseViewPagerAdapter(getChildFragmentManager());
+        adapter = new BaseViewPagerAdapter(getActivity(),getChildFragmentManager());
         //子类填充数据
         setPagerData(adapter);
 
