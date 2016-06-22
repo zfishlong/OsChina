@@ -1,9 +1,14 @@
 package com.ilmare.oschina.Fragment;
 
+import android.view.View;
+import android.widget.AdapterView;
+
 import com.ilmare.oschina.Adapter.NewsListViewAdapter;
 import com.ilmare.oschina.Base.BaseListViewFragment;
+import com.ilmare.oschina.Beans.News;
 import com.ilmare.oschina.Beans.NewsList;
 import com.ilmare.oschina.Net.OSChinaApi;
+import com.ilmare.oschina.Utils.UIHelper;
 import com.ilmare.oschina.Utils.XmlUtils;
 import com.loopj.android.http.RequestParams;
 
@@ -18,11 +23,12 @@ import com.loopj.android.http.RequestParams;
  * ===============================
  */
 
-public class AllNewsFragment extends BaseListViewFragment {
+public class AllNewsFragment extends BaseListViewFragment implements AdapterView.OnItemClickListener {
 
     private NewsList newsList;
     private int mCurrentPage = 1;  //当前页
     private int mCatalog = 1;    //页分类
+    private NewsListViewAdapter newsListViewAdapter;
 
     @Override
     protected void loadFromServer() {
@@ -42,8 +48,12 @@ public class AllNewsFragment extends BaseListViewFragment {
     @Override
     protected void onLoadSuccess(String content) {
         newsList = XmlUtils.toBean(NewsList.class, content.getBytes());
-        NewsListViewAdapter adapter = new NewsListViewAdapter(newsList, getActivity());
-        listview.setAdapter(adapter);
+
+        newsListViewAdapter = new NewsListViewAdapter(newsList, getActivity());
+
+        listview.setAdapter(newsListViewAdapter);
+
+        listview.setOnItemClickListener(this);
     }
 
     protected String getUrl() {
@@ -59,4 +69,15 @@ public class AllNewsFragment extends BaseListViewFragment {
     }
 
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        News news= (News) newsListViewAdapter.getItem(position);
+        //Todo 跳转页面 加入已读列表
+        if (news != null) {
+            UIHelper.showNewsRedirect(view.getContext(), news);
+            // 放入已读列表
+//            saveToReadedList(view, NewsList.PREF_READED_NEWS_LIST, news.getId()
+//                    + "");
+        }
+    }
 }
