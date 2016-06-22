@@ -23,15 +23,17 @@ import android.widget.TextView;
 
 import com.ilmare.oschina.Fragment.DrawerFragment;
 import com.ilmare.oschina.UI.MainTab;
+import com.ilmare.oschina.UI.QuickOptionDialog;
 import com.ilmare.oschina.Utils.ToastUtil;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class MainActivity extends AppCompatActivity  implements View.OnTouchListener, DrawerLayout.DrawerListener, DrawerFragment.OnDrawerItemSelectedListener {
+public class MainActivity extends AppCompatActivity  implements View.OnTouchListener, DrawerLayout.DrawerListener, DrawerFragment.OnDrawerItemSelectedListener, View.OnClickListener {
 
     @InjectView(R.id.realtabcontent)
     FrameLayout realtabcontent;
+
     @InjectView(android.R.id.tabhost)
     FragmentTabHost tabhost;
     @InjectView(R.id.quick_option_iv)
@@ -50,7 +52,8 @@ public class MainActivity extends AppCompatActivity  implements View.OnTouchList
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
-        navigationDrawer= (DrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);;
+        //布局文件中的fragment要用findFragmentById 替代
+        navigationDrawer= (DrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         initView();
     }
 
@@ -63,21 +66,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnTouchList
         }
         initTabs();
         restoreActionBar();
-
-//        1.访问网络 解析bean对象
-//
-//        DefaultHttpClient httpClient = new DefaultHttpClient();
-//        try {
-//			HttpResponse response = httpClient.execute(new HttpGet("http://192.168.1.100:8080/oschina/list/news/page0.xml"));
-//			if(response.getStatusLine().getStatusCode()==200){
-//				InputStream is = response.getEntity().getContent();
-//				NewsList newsList = XmlUtils.toBean(NewsList.class, is);
-//				List<News> list = newsList.getList();
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-
+        quickOptionIv.setOnClickListener(this);
     }
 
     private void initTabs() {
@@ -143,7 +132,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnTouchList
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerToggle.syncState();//该方法会自动和actionBar关联
 
-//      setSupportActionBar(toolbar);  如果使用toolbar 使用这句代买
+//      setSupportActionBar(toolbar);  如果使用toolbar 使用这句替代
     }
 
 
@@ -234,4 +223,20 @@ public class MainActivity extends AppCompatActivity  implements View.OnTouchList
                 break;
         }
     }
+
+    //快捷菜单点击事件
+    @Override
+    public void onClick(View v) {
+        showQuickOption();
+    }
+
+    // 显示快速操作界面
+    private void showQuickOption() {
+        final QuickOptionDialog dialog = new QuickOptionDialog(
+                MainActivity.this);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+    }
+
 }
