@@ -6,18 +6,17 @@ import android.content.pm.PackageManager.NameNotFoundException;
 
 import com.ilmare.oschina.Base.BaseApplication;
 import com.ilmare.oschina.Beans.User;
+import com.ilmare.oschina.Net.ApiHttpClient;
 import com.ilmare.oschina.Utils.CyptoUtils;
 import com.ilmare.oschina.Utils.StringUtils;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.PersistentCookieStore;
 
 import java.util.Properties;
 import java.util.UUID;
 
 /**
  * 全局应用程序类：用于保存和调用全局应用配置及访问网络数据
- * 
- * @author 火蚁 (http://my.oschina.net/LittleDY)
- * @version 1.0
- * @created 2014-04-22
  */
 public class AppContext extends BaseApplication {
 
@@ -37,19 +36,18 @@ public class AppContext extends BaseApplication {
     }
 
     private void init() {
-//        // 初始化网络请求
-//        AsyncHttpClient client = new AsyncHttpClient();
-//        // KGBJVUYIBHS2345UIY 令牌
+        // 初始化网络请求
+        AsyncHttpClient client = new AsyncHttpClient();
+        // KGBJVUYIBHS2345UIY 令牌
 //        PersistentCookieStore myCookieStore = new PersistentCookieStore(this);
 //        client.setCookieStore(myCookieStore);
-//
-//        ApiHttpClient.setHttpClient(client);
+
+        ApiHttpClient.setHttpClient(client);
 //        ApiHttpClient.setCookie(ApiHttpClient.getCookie(this));
 //
 //        // Log控制器
 //        KJLoger.openDebutLog(true);
 //        TLog.DEBUG = BuildConfig.DEBUG;
-//
 //        // Bitmap缓存地址
 //        BitmapConfig.CACHEPATH = "OSChina/imagecache";
     }

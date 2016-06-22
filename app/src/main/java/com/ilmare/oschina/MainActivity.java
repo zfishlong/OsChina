@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -27,7 +28,7 @@ import com.ilmare.oschina.Utils.ToastUtil;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class MainActivity extends AppCompatActivity implements View.OnTouchListener, DrawerLayout.DrawerListener, DrawerFragment.OnDrawerItemSelectedListener {
+public class MainActivity extends AppCompatActivity  implements View.OnTouchListener, DrawerLayout.DrawerListener, DrawerFragment.OnDrawerItemSelectedListener {
 
     @InjectView(R.id.realtabcontent)
     FrameLayout realtabcontent;
