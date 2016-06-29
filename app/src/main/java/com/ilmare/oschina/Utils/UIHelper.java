@@ -14,7 +14,7 @@ import android.text.style.ForegroundColorSpan;
 import com.ilmare.oschina.AppConfig;
 import com.ilmare.oschina.AppContext;
 import com.ilmare.oschina.Beans.News;
-import com.ilmare.oschina.Widget.DetailActivity;
+import com.ilmare.oschina.DetailActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,9 +45,6 @@ public class UIHelper {
 
     /**
      * 显示新闻详情
-     * 
-     * @param context
-     * @param newsId
      */
     public static void showNewsDetail(Context context, int newsId,
             int commentCount) {
@@ -55,8 +52,8 @@ public class UIHelper {
         intent.putExtra("news_id", newsId);
         intent.putExtra("comment_count", commentCount);
 
-//        intent.putExtra(DetailActivity.BUNDLE_KEY_DISPLAY_TYPE,
-//                DetailActivity.DISPLAY_NEWS);
+        intent.putExtra(DetailActivity.BUNDLE_KEY_DISPLAY_TYPE,
+                DetailActivity.DISPLAY_NEWS);
 
         context.startActivity(intent);
     }

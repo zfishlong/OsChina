@@ -49,7 +49,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Widget.DetailActivity"/>
+        <activity android:name=".DetailActivity"/>
     </application>
 
 
