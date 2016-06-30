@@ -82,6 +82,7 @@ public abstract class BaseListViewFragment extends Fragment implements SwipeRefr
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        //
         ButterKnife.reset(this);
     }
 

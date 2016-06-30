@@ -349,16 +349,16 @@ public class OSChinaApi {
     /**
      * 获取新闻明细
      *
-     * @param newsId
      * @param handler
      */
     public static void getNewsDetail(int id, AsyncHttpResponseHandler handler) {
-//        RequestParams params = new RequestParams("id", id);
-//        ApiHttpClient.get("action/api/news_detail", params, handler);
+        //
+        RequestParams params = new RequestParams("id", id);
+        ApiHttpClient.get("action/api/news_detail", params, handler);
 
-        RequestParams params = new RequestParams();
-        String path = "oschina/detail/news_detail/" + id + ".xml";
-        ApiHttpClient.getLocal(path, params, handler);
+//        RequestParams params = new RequestParams();
+//        String path = "oschina/detail/news_detail/" + id + ".xml";
+//        ApiHttpClient.getLocal(path, params, handler);
     }
 
     public static void getBlogDetail(int id, AsyncHttpResponseHandler handler) {

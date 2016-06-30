@@ -6,6 +6,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
+import java.io.ByteArrayInputStream;
+
+import butterknife.ButterKnife;
 
 /**
  * ===============================
@@ -13,15 +20,61 @@ import android.view.ViewGroup;
  * 创建时间：6/16/2016 12:32 PM
  * 版本号： 1.0
  * 版权所有(C) 6/16/2016
- * 描述：
+ * 描述：基类碎片的整理
  * ===============================
  */
-
-public class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment implements View.OnClickListener {
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View view=View.inflate(getActivity(),getLayoutId(),null);
+        ButterKnife.inject(this, view);
+        return view;
     }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        init();
+        initData();
+    }
+
+    protected abstract void init();
+
+    protected abstract void initData();
+
+    protected abstract int getLayoutId();
+
+    //点击事件
+    @Override
+    public void onClick(View v) {
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
+    }
+
+
+    protected AsyncHttpResponseHandler mHandler = new AsyncHttpResponseHandler() {
+        @Override
+        public void onSuccess(String content) {
+            onLoadSuccess(content);
+//            saveCache(entity);
+        }
+
+        @Override
+        public void onFailure(Throwable error, String content) {
+            super.onFailure(error, content);
+            Toast.makeText(getActivity(), content, 0).show();
+//            readCacheData(getCacheKey());
+        }
+    };
+
+    protected abstract void onLoadSuccess(String content);
+
+
 }

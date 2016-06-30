@@ -3,6 +3,7 @@ package com.ilmare.oschina.Utils;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -10,6 +11,11 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
+import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.ZoomButtonsController;
 
 import com.ilmare.oschina.AppConfig;
 import com.ilmare.oschina.AppContext;
@@ -22,7 +28,9 @@ import org.json.JSONObject;
 
 public class UIHelper {
 
-    /** 全局web样式 */
+    /**
+     * 全局web样式
+     */
     // 链接样式文件，代码块高亮的处理
     public final static String linkCss = "<script type=\"text/javascript\" src=\"file:///android_asset/shCore.js\"></script>"
             + "<script type=\"text/javascript\" src=\"file:///android_asset/brush.js\"></script>"
@@ -42,12 +50,12 @@ public class UIHelper {
     private static final String SHOWIMAGE = "ima-api:action=showImage&data=";
 
 
-
     /**
      * 显示新闻详情
      */
     public static void showNewsDetail(Context context, int newsId,
-            int commentCount) {
+                                      int commentCount) {
+
         Intent intent = new Intent(context, DetailActivity.class);
         intent.putExtra("news_id", newsId);
         intent.putExtra("comment_count", commentCount);
@@ -58,26 +66,28 @@ public class UIHelper {
         context.startActivity(intent);
     }
 
+
+    //
     public static void showNewsRedirect(Context context, News news) {
         String url = news.getUrl();
         // 如果是活动则直接跳转活动详情页面
         String eventUrl = news.getNewType().getEventUrl();
-        
+
         if (!StringUtils.isEmpty(eventUrl)) {
             showEventDetail(context,
                     StringUtils.toInt(news.getNewType().getAttachment()));
             return;
         }
-        
+
         // url为空-旧方法
         if (StringUtils.isEmpty(url)) {
             int newsId = news.getId();
             int newsType = news.getNewType().getType();
             String objId = news.getNewType().getAttachment();
             switch (newsType) {
-            case News.NEWSTYPE_NEWS:
-                showNewsDetail(context, newsId, news.getCommentCount());
-                break;
+                case News.NEWSTYPE_NEWS:
+                    showNewsDetail(context, newsId, news.getCommentCount());
+                    break;
 //            case News.NEWSTYPE_SOFTWARE:
 //                showSoftwareDetail(context, objId);
 //                break;
@@ -89,23 +99,62 @@ public class UIHelper {
 //                showBlogDetail(context, StringUtils.toInt(objId),
 //                        news.getCommentCount());
 //                break;
-            default:
-                break;
+                default:
+                    break;
             }
         } else {
             showUrlRedirect(context, url);
         }
     }
 
+
+
+
+
+    public static void initWebView(WebView webView) {
+        WebSettings settings = webView.getSettings();
+        settings.setDefaultFontSize(15);              //默认字体大小
+        settings.setJavaScriptEnabled(true);          //javascript可用
+        settings.setSupportZoom(true);                //缩放可用
+        settings.setBuiltInZoomControls(true);
+        int sysVersion = Build.VERSION.SDK_INT;       //去掉缩放按钮
+        if (sysVersion >= 11) {
+            settings.setDisplayZoomControls(false);
+        } else {
+            ZoomButtonsController zbc = new ZoomButtonsController(webView);
+            zbc.getZoomControls().setVisibility(View.GONE);
+        }
+        webView.setWebViewClient(UIHelper.getWebViewClient());  //设置默认浏览器
+    }
+
+    /**
+     * 获取webviewClient对象
+     *
+     * @return
+     */
+    public static WebViewClient getWebViewClient() {
+        return new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                showUrlRedirect(view.getContext(), url);
+                return true;
+            }
+        };
+    }
+
+
+    //
     private static void showUrlRedirect(Context context, String url) {
         if (url == null)
             return;
+        //显示活动详细信息
         if (url.contains("city.oschina.net/")) {
             int id = StringUtils.toInt(url.substring(url.lastIndexOf('/') + 1));
             UIHelper.showEventDetail(context, id);
             return;
         }
 
+        //显示图片
         if (url.startsWith(SHOWIMAGE)) {
             String realUrl = url.substring(SHOWIMAGE.length());
             try {
@@ -118,6 +167,7 @@ public class UIHelper {
             }
             return;
         }
+        //
         URLsUtils urls = URLsUtils.parseURL(url);
         if (urls != null) {
             showLinkRedirect(context, urls.getObjType(), urls.getObjId(),
@@ -127,27 +177,26 @@ public class UIHelper {
         }
     }
 
-    private static void showLinkRedirect(Context context, int objType, int objId, String objKey) {
-
+    //
+    private static void showImagePreview(Context context, int idx, String[] urls) {
+        //TODO 展示图片预览
+        System.out.println("展示图片预览");
     }
 
-    private static void showImagePreview(Context context, int idx, String[] urls) {
-
+    private static void showLinkRedirect(Context context, int objType, int objId, String objKey) {
+        //TODO 转去链接
+        System.out.println("转去链接");
     }
 
     private static void showEventDetail(Context context, int i) {
-
+        //TODO 显示活动
+        System.out.println("显示活动");
     }
-
-
-
-
 
 
     public static String setHtmlCotentSupportImagePreview(String body) {
         // 读取用户设置：是否加载文章图片--默认有wifi下始终加载图片
-        if (AppContext.get(AppConfig.KEY_LOAD_IMAGE, true)) {
-//                || TDevice.isWifiOpen()
+        if (AppContext.get(AppConfig.KEY_LOAD_IMAGE, true)|| TDevice.isWifiOpen()) {
             // 过滤掉 img标签的width,height属性
             body = body.replaceAll("(<img[^>]*?)\\s+width\\s*=\\s*\\S+", "$1");
             body = body.replaceAll("(<img[^>]*?)\\s+height\\s*=\\s*\\S+", "$1");
@@ -164,7 +213,7 @@ public class UIHelper {
 
 
     public static SpannableString parseActiveAction(int objecttype,
-            int objectcatalog, String objecttitle) {
+                                                    int objectcatalog, String objecttitle) {
         String title = "";
         int start = 0;
         int end = 0;
@@ -221,13 +270,13 @@ public class UIHelper {
 
     /**
      * 组合动态的回复文本
-     * 
+     *
      * @param name
      * @param body
      * @return
      */
     public static SpannableStringBuilder parseActiveReply(String name,
-            String body) {
+                                                          String body) {
         Spanned span = Html.fromHtml(body.trim());
         SpannableStringBuilder sp = new SpannableStringBuilder(name + "：");
         sp.append(span);
@@ -239,15 +288,6 @@ public class UIHelper {
 
         return sp;
     }
-
-
-
-
-
-
-
-
-
 
 
 }

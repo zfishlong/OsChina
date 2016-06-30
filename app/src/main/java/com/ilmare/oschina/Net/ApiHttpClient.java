@@ -62,7 +62,6 @@ public class ApiHttpClient {
             AsyncHttpResponseHandler handler) {
         client.get(getAbsoluteApiUrl(partUrl), params, handler);
 
-
         log(new StringBuilder("GET ").append(partUrl).append("&")
                 .append(params).toString());
     }

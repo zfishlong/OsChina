@@ -245,6 +245,7 @@ public class TDevice {
 		}
 	}
 
+	//包是否存在
 	public static boolean isPackageExist(String pckName) {
 		try {
 			PackageInfo pckInfo = BaseApplication.context().getPackageManager()
@@ -257,10 +258,12 @@ public class TDevice {
 		return false;
 	}
 
+	//隐藏正在动画的view
 	public static void hideAnimatedView(View view) {
 		if (PRE_HC && view != null)
 			view.setPadding(view.getWidth(), 0, 0, 0);
 	}
+
 
 	public static void hideSoftKeyboard(View view) {
 		if (view == null)
@@ -269,6 +272,7 @@ public class TDevice {
 				Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
 				view.getWindowToken(), 0);
 	}
+
 
 	public static boolean isLandscape() {
 		boolean flag;
@@ -279,12 +283,14 @@ public class TDevice {
 		return flag;
 	}
 
+
 	public static boolean isPortrait() {
 		boolean flag = true;
 		if (BaseApplication.context().getResources().getConfiguration().orientation != 1)
 			flag = false;
 		return flag;
 	}
+
 
 	public static boolean isTablet() {
 		if (_isTablet == null) {
@@ -298,6 +304,7 @@ public class TDevice {
 		}
 		return _isTablet.booleanValue();
 	}
+
 
 	public static float pixelsToDp(float f) {
 		return f / (getDisplayMetrics().densityDpi / 160F);
@@ -336,6 +343,7 @@ public class TDevice {
 				+ BaseApplication.context().getResources().getConfiguration().locale
 						.getCountry();
 	}
+
 
 	public static boolean isZhCN() {
 		String lang = BaseApplication.context().getResources()
@@ -385,6 +393,7 @@ public class TDevice {
 		List<ResolveInfo> infos = pm.queryIntentActivities(intent, 0);
 		return infos.size() > 0;
 	}
+
 
 	public static void openAppInMarket(Context context) {
 		if (context != null) {

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.ilmare.oschina.AppManager;
 import com.ilmare.oschina.R;
+import com.ilmare.oschina.Utils.StringUtils;
 import com.ilmare.oschina.Utils.TDevice;
 import android.support.v7.app.ActionBar.LayoutParams;
 
@@ -31,15 +32,30 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(getLayoutId());
+
+        setContentView(getLayoutId());
         AppManager.getAppManager().addActivity(this);
 
+        //初始化Actionbar
         if (hasActionBar()) {
             supportActionBar = getSupportActionBar();
             //初始化actionbar
             initActionBar(supportActionBar);
         }
+
+        //初始化操作
+        init(savedInstanceState);
+        //初始化View
+        initView();
+        //初始化数据
+        initData();
     }
+
+    protected abstract void initData();
+
+    protected abstract void initView();
+
+    protected abstract void init(Bundle savedInstanceState);
 
     protected abstract boolean hasActionBar();
 
@@ -102,6 +118,25 @@ public abstract class BaseActivity extends AppCompatActivity {
             if (titleRes != 0) {
                 actionBar.setTitle(titleRes);
             }
+        }
+    }
+
+
+    public void setActionBarTitle(int resId) {
+        if (resId != 0) {
+            setActionBarTitle(getString(resId));
+        }
+    }
+
+    public void setActionBarTitle(String title) {
+        if (StringUtils.isEmpty(title)) {
+            title = getString(R.string.app_name);
+        }
+        if (hasActionBar() && supportActionBar != null) {
+            if (mTvActionTitle != null) {
+                mTvActionTitle.setText(title);
+            }
+            supportActionBar.setTitle(title);
         }
     }
 
