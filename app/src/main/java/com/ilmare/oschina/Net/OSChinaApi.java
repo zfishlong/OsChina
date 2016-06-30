@@ -73,19 +73,19 @@ public class OSChinaApi {
     public static void getBlogList(String type, int pageIndex,
                                    AsyncHttpResponseHandler handler) {
         RequestParams params = new RequestParams();
-//        params.put("type", type);
-//        params.put("pageIndex", pageIndex);
-//        params.put("pageSize", AppContext.PAGE_SIZE);
-//        ApiHttpClient.get("action/api/blog_list", params, handler);
+        params.put("type", type);
+        params.put("pageIndex", pageIndex+"");
+        params.put("pageSize", AppContext.PAGE_SIZE+"");
+        ApiHttpClient.get("action/api/blog_list", params, handler);
 
-        String path = "";
-        if (BlogList.CATALOG_LATEST.equals(type)) {
-            path = "oschina/list/blog/page" + pageIndex + ".xml";
-        } else if (BlogList.CATALOG_RECOMMEND.equals(type)) {
-            path = "oschina/list/recommend/page" + pageIndex + ".xml";
-        }
-
-        ApiHttpClient.getLocal(path, params, handler);
+//        String path = "";
+//        if (BlogList.CATALOG_LATEST.equals(type)) {
+//            path = "oschina/list/blog/page" + pageIndex + ".xml";
+//        } else if (BlogList.CATALOG_RECOMMEND.equals(type)) {
+//            path = "oschina/list/recommend/page" + pageIndex + ".xml";
+//        }
+//
+//        ApiHttpClient.getLocal(path, params, handler);
     }
 
     public static void getPostList(int catalog, int page,

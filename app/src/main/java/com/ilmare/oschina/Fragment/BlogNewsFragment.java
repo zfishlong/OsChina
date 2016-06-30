@@ -1,8 +1,13 @@
 package com.ilmare.oschina.Fragment;
 
+import android.os.Bundle;
+
+import com.ilmare.oschina.Adapter.BlogListAdapter;
 import com.ilmare.oschina.Adapter.NewsListViewAdapter;
 import com.ilmare.oschina.Base.BaseListViewFragment;
+import com.ilmare.oschina.Beans.BlogList;
 import com.ilmare.oschina.Beans.NewsList;
+import com.ilmare.oschina.Net.OSChinaApi;
 import com.ilmare.oschina.Utils.XmlUtils;
 import com.loopj.android.http.RequestParams;
 
@@ -19,30 +24,32 @@ import com.loopj.android.http.RequestParams;
 
 public class BlogNewsFragment extends BaseListViewFragment {
 
-    private NewsList newsList;
+
+    public static final String BUNDLE_BLOG_TYPE = "BUNDLE_BLOG_TYPE";
+    private String blogType;
+    private int mCurrentPage=0;
+    private BlogList blogList;
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if (args != null) {
+            blogType = args.getString(BUNDLE_BLOG_TYPE);  //获取
+        }
+    }
 
     @Override
     protected void loadFromServer() {
-
+       OSChinaApi.getBlogList(blogType, mCurrentPage, mHandler);
     }
 
     @Override
     protected void onLoadSuccess(String content) {
-//        newsList = XmlUtils.toBean(NewsList.class, content.getBytes());
-//        NewsListViewAdapter adapter=new NewsListViewAdapter(newsList,getActivity());
-//        listview.setAdapter(adapter);
-    }
-
-    protected String getUrl() {
-        return "http://www.oschina.net/action/api/blog_list";
-    }
-
-    public RequestParams getParams() {
-        RequestParams params=new RequestParams();
-        params.put("pageIndex","0");
-        params.put("type","latest");
-        params.put("pageSize","20");
-        return params;
+        blogList = XmlUtils.toBean(BlogList.class, content.getBytes());
+        BlogListAdapter adapter=new BlogListAdapter(getActivity(),blogList);
+        listview.setAdapter(adapter);
     }
 
 

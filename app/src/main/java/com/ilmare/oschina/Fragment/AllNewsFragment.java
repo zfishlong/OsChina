@@ -48,11 +48,8 @@ public class AllNewsFragment extends BaseListViewFragment implements AdapterView
     @Override
     protected void onLoadSuccess(String content) {
         newsList = XmlUtils.toBean(NewsList.class, content.getBytes());
-
         newsListViewAdapter = new NewsListViewAdapter(newsList, getActivity());
-
         listview.setAdapter(newsListViewAdapter);
-
         listview.setOnItemClickListener(this);
     }
 

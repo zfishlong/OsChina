@@ -10,17 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.ilmare.oschina.Adapter.NewsListViewAdapter;
-import com.ilmare.oschina.AppContext;
-import com.ilmare.oschina.Beans.NewsList;
 import com.ilmare.oschina.R;
-import com.ilmare.oschina.Utils.StringUtils;
-import com.ilmare.oschina.Utils.XmlUtils;
-import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
-import org.apache.http.Header;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -78,12 +69,10 @@ public abstract class BaseListViewFragment extends Fragment implements SwipeRefr
     protected abstract void onLoadSuccess(String content);
 
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        //
-        ButterKnife.reset(this);
+        //ButterKnife.reset(this);
     }
 
     @Override

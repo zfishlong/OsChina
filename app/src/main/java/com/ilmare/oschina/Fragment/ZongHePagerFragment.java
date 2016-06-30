@@ -5,8 +5,8 @@ import android.os.Bundle;
 import com.ilmare.oschina.Adapter.BaseViewPagerAdapter;
 import com.ilmare.oschina.Adapter.FragmentInfo;
 import com.ilmare.oschina.Base.BaseViewPagerFragment;
+import com.ilmare.oschina.Beans.BlogList;
 import com.ilmare.oschina.R;
-
 /**
  * ===============================
  * 作者: ilmare:
@@ -16,7 +16,6 @@ import com.ilmare.oschina.R;
  * 描述：综合
  * ===============================
  */
-
 public class ZongHePagerFragment extends BaseViewPagerFragment {
 
     private String[] stringArray;
@@ -27,12 +26,17 @@ public class ZongHePagerFragment extends BaseViewPagerFragment {
         fragmentAdapter.setPagerData(new FragmentInfo(AllNewsFragment.class,getBundle(stringArray[0])), stringArray[0]);
         fragmentAdapter.setPagerData(new FragmentInfo(HotNewsFragment.class,getBundle(stringArray[1])), stringArray[1]);
         fragmentAdapter.setPagerData(new FragmentInfo(BlogNewsFragment.class,getBundle(stringArray[2])), stringArray[2]);
-        fragmentAdapter.setPagerData(new FragmentInfo(RecommandNewsFragment.class,getBundle(stringArray[3])), stringArray[3]);
+        fragmentAdapter.setPagerData(new FragmentInfo(BlogNewsFragment.class,getBundle(stringArray[3])), stringArray[3]);
     }
+
 
     private Bundle getBundle(String catalog) {
         Bundle bundle = new Bundle();
-        bundle.putString("key", "我是综合里的: " + catalog);
+        if(catalog.equals(stringArray[2])){
+            bundle.putString(BlogNewsFragment.BUNDLE_BLOG_TYPE, BlogList.CATALOG_LATEST);
+        }else if(catalog.equals(stringArray[3])){
+            bundle.putString(BlogNewsFragment.BUNDLE_BLOG_TYPE, BlogList.CATALOG_RECOMMEND);
+        }
         return bundle;
     }
 
