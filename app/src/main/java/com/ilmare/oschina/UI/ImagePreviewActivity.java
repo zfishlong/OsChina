@@ -35,7 +35,6 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  * 描述：
  * ===============================
  */
-
 public class ImagePreviewActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
 
 
