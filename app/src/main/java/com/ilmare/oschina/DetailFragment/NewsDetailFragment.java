@@ -69,13 +69,14 @@ public class NewsDetailFragment extends BaseFragment {
 
     @Override
     protected void onLoadSuccess(String content) {
-        System.out.println(content);
+//        System.out.println(content);
         NewsDetail newsDetail = XmlUtils.toBean(NewsDetail.class, content.getBytes());
         System.out.println(newsDetail);
         mNews = newsDetail.getNews();
 
         fillUI();
         fillWebViewBody();
+
         //TODO
 //        ((DetailActivity) getActivity()).setCommentCount(mNews
 //                .getCommentCount());

@@ -362,12 +362,12 @@ public class OSChinaApi {
     }
 
     public static void getBlogDetail(int id, AsyncHttpResponseHandler handler) {
-//        RequestParams params = new RequestParams("id", id);
-//        ApiHttpClient.get("action/api/blog_detail", params, handler);
+        RequestParams params = new RequestParams("id", id);
+        ApiHttpClient.get("action/api/blog_detail", params, handler);
 
-        RequestParams params = new RequestParams();
-        String path = "oschina/detail/blog_detail/" + id + ".xml";
-        ApiHttpClient.getLocal(path, params, handler);
+//        RequestParams params = new RequestParams();
+//        String path = "oschina/detail/blog_detail/" + id + ".xml";
+//        ApiHttpClient.getLocal(path, params, handler);
     }
 
     /**

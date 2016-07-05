@@ -44,7 +44,6 @@ public abstract class BaseListViewFragment extends Fragment implements SwipeRefr
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         loadFromServer();
         swiperefreshlayout.setOnRefreshListener(this);
     }

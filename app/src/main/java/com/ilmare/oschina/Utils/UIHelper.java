@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -154,7 +155,6 @@ public class UIHelper {
             UIHelper.showEventDetail(context, id);
             return;
         }
-
         //显示图片
         if (url.startsWith(SHOWIMAGE)) {
             String realUrl = url.substring(SHOWIMAGE.length());
@@ -188,9 +188,12 @@ public class UIHelper {
         System.out.println("转去链接");
     }
 
-    private static void showEventDetail(Context context, int i) {
-        //TODO 显示活动
-        System.out.println("显示活动");
+    private static void showEventDetail(Context context, int eventId) {
+        Intent intent = new Intent(context, DetailActivity.class);
+        intent.putExtra("post_id", eventId);
+        intent.putExtra(DetailActivity.BUNDLE_KEY_DISPLAY_TYPE,
+                DetailActivity.DISPLAY_EVENT);
+        context.startActivity(intent);
     }
 
 
@@ -290,4 +293,18 @@ public class UIHelper {
     }
 
 
+    /**
+     * 显示博客详情
+     *
+     * @param context
+     * @param blogId
+     */
+    public static void showBlogDetail(Context context, int blogId, int count) {
+        Intent intent = new Intent(context, DetailActivity.class);
+        intent.putExtra("blog_id", blogId);
+        intent.putExtra("comment_count", count);
+        intent.putExtra(DetailActivity.BUNDLE_KEY_DISPLAY_TYPE,
+                DetailActivity.DISPLAY_BLOG);
+        context.startActivity(intent);
+    }
 }

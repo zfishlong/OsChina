@@ -62,7 +62,7 @@ public class ImagePreviewActivity extends BaseActivity implements ViewPager.OnPa
 
     @Override
     protected boolean hasActionBar() {
-        getSupportActionBar().hide();  //
+        getSupportActionBar().hide();  //隐藏actionbar
         return false;
     }
 
@@ -95,7 +95,7 @@ public class ImagePreviewActivity extends BaseActivity implements ViewPager.OnPa
         viewPager.setAdapter(samplePagerAdapter);
         viewPager.setOnPageChangeListener(this);
         viewPager.setCurrentItem(index);
-
+        onPageSelected(index);
     }
 
     @Override

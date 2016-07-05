@@ -4,14 +4,13 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.ilmare.oschina.Base.BaseActivity;
 import com.ilmare.oschina.Base.BaseFragment;
+import com.ilmare.oschina.DetailFragment.BlogDetailFragment;
 import com.ilmare.oschina.DetailFragment.NewsDetailFragment;
-import com.ilmare.oschina.Fragment.DefaultFragment;
 import com.ilmare.oschina.R;
 
 import butterknife.ButterKnife;
@@ -29,7 +28,9 @@ import butterknife.InjectView;
 public class DetailActivity extends BaseActivity {
 
     public static final String BUNDLE_KEY_DISPLAY_TYPE = "display_type";
-    public static final int DISPLAY_NEWS = 0;
+    public static final int DISPLAY_NEWS = 0;  //显示资讯
+    public static final int DISPLAY_EVENT =1;  //显示活动
+    public static final int DISPLAY_BLOG =3; //显示博客详情
 
     @InjectView(R.id.container)
     FrameLayout container;
@@ -77,8 +78,14 @@ public class DetailActivity extends BaseActivity {
         int displayType = getIntent().getIntExtra(BUNDLE_KEY_DISPLAY_TYPE,
                 DISPLAY_NEWS);
         switch (displayType) {
-            case DISPLAY_NEWS:   //
+            case DISPLAY_NEWS:   //显示新闻
                 toShowFragment=new NewsDetailFragment();
+
+            case DISPLAY_EVENT:   //显示活動
+                toShowFragment=new NewsDetailFragment();
+                break;
+            case DISPLAY_BLOG:   //显示博客
+                toShowFragment=new BlogDetailFragment();
                 break;
         }
 

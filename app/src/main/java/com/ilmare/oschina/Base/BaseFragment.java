@@ -69,7 +69,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         @Override
         public void onFailure(Throwable error, String content) {
             super.onFailure(error, content);
-            Toast.makeText(getActivity(), content, 0).show();
+            Toast.makeText(getActivity(), content, Toast.LENGTH_SHORT).show();
 //            readCacheData(getCacheKey());
         }
     };
