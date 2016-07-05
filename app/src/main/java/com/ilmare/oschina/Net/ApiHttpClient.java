@@ -9,10 +9,6 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-import org.apache.http.client.params.ClientPNames;
-
-import java.util.Locale;
-
 public class ApiHttpClient {
 
     public final static String HOST = "www.oschina.net";

@@ -13,7 +13,7 @@ import com.ilmare.oschina.R;
  * 创建时间：6/15/2016 11:52 PM
  * 版本号： 1.0
  * 版权所有(C) 6/15/2016
- * 描述：综合
+ * 描述：综合界面-->
  * ===============================
  */
 public class ZongHePagerFragment extends BaseViewPagerFragment {

@@ -1,4 +1,4 @@
-package com.ilmare.oschina;
+package com.ilmare.oschina.UI;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -12,6 +12,7 @@ import com.ilmare.oschina.Base.BaseActivity;
 import com.ilmare.oschina.Base.BaseFragment;
 import com.ilmare.oschina.DetailFragment.NewsDetailFragment;
 import com.ilmare.oschina.Fragment.DefaultFragment;
+import com.ilmare.oschina.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

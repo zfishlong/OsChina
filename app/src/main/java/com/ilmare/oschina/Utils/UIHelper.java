@@ -20,7 +20,8 @@ import android.widget.ZoomButtonsController;
 import com.ilmare.oschina.AppConfig;
 import com.ilmare.oschina.AppContext;
 import com.ilmare.oschina.Beans.News;
-import com.ilmare.oschina.DetailActivity;
+import com.ilmare.oschina.UI.DetailActivity;
+import com.ilmare.oschina.UI.ImagePreviewActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -178,9 +179,8 @@ public class UIHelper {
     }
 
     //
-    private static void showImagePreview(Context context, int idx, String[] urls) {
-        //TODO 展示图片预览
-        System.out.println("展示图片预览");
+    private static void showImagePreview(Context context, int index, String[] imageUrls) {
+        ImagePreviewActivity.showImagePrivew(context, index, imageUrls);
     }
 
     private static void showLinkRedirect(Context context, int objType, int objId, String objKey) {

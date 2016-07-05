@@ -1,10 +1,8 @@
-package com.ilmare.oschina;
+package com.ilmare.oschina.UI;
 
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -22,8 +20,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.ilmare.oschina.Fragment.DrawerFragment;
-import com.ilmare.oschina.UI.MainTab;
-import com.ilmare.oschina.UI.QuickOptionDialog;
+import com.ilmare.oschina.R;
 import com.ilmare.oschina.Utils.ToastUtil;
 
 import butterknife.ButterKnife;
