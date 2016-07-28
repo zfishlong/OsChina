@@ -6,11 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
-
-import java.io.ByteArrayInputStream;
 
 import butterknife.ButterKnife;
 
@@ -69,7 +66,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         @Override
         public void onFailure(Throwable error, String content) {
             super.onFailure(error, content);
-            Toast.makeText(getActivity(), content, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getActivity(), content, Toast.LENGTH_SHORT).show();
 //            readCacheData(getCacheKey());
         }
     };

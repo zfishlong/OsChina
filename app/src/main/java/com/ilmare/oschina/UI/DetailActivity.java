@@ -92,7 +92,6 @@ public class DetailActivity extends BaseActivity {
             case DISPLAY_BLOG:   //显示博客
                 actionBarTitle=R.string.actionbar_title_detail;
                 toShowFragment=new BlogDetailFragment();
-
                 break;
             case DISPLAY_TWEET: //显示动弹详情
                 actionBarTitle = R.string.actionbar_title_tweet;

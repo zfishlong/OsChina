@@ -13,12 +13,16 @@ import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.annotation.SuppressLint;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ZoomButtonsController;
-import com.ilmare.oschina.Beans.Tweet;
+
 import com.ilmare.oschina.Beans.News;
+import com.ilmare.oschina.Beans.Tweet;
+import com.ilmare.oschina.Inter.OnWebViewImageListener;
 import com.ilmare.oschina.UI.AppConfig;
 import com.ilmare.oschina.UI.AppContext;
 import com.ilmare.oschina.UI.DetailActivity;
@@ -202,6 +206,12 @@ public class UIHelper {
 
     }
 
+    @JavascriptInterface
+    public static void showImagePreview(Context context, String[] imageUrls) {
+        ImagePreviewActivity.showImagePrivew(context, 0, imageUrls);
+    }
+
+
     //
     public static void showImagePreview(Context context, int index, String[] imageUrls) {
         ImagePreviewActivity.showImagePrivew(context, index, imageUrls);
@@ -238,6 +248,25 @@ public class UIHelper {
         return body;
     }
 
+
+
+    /**
+     * 添加网页的点击图片展示支持
+     */
+    @SuppressLint({ "JavascriptInterface", "SetJavaScriptEnabled" })
+    @JavascriptInterface
+    public static void addWebImageShow(final Context cxt, WebView wv) {
+        wv.getSettings().setJavaScriptEnabled(true);
+        wv.addJavascriptInterface(new OnWebViewImageListener() {
+            @Override
+            @JavascriptInterface
+            public void showImagePreview(String bigImageUrl) {
+                if (bigImageUrl != null && !StringUtils.isEmpty(bigImageUrl)) {
+                    UIHelper.showImagePreview(cxt, new String[] { bigImageUrl });
+                }
+            }
+        }, "mWebViewImageListener");
+    }
 
     public static SpannableString parseActiveAction(int objecttype,
                                                     int objectcatalog, String objecttitle) {

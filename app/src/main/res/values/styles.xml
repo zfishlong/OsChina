@@ -255,6 +255,14 @@
         <item name="android:layout_height">20dp</item>
     </style>
 
+
     <!-- 操作项样式end -->
+    <style name="comment_user_face_image">
+        <item name="android:layout_width">28.0dip</item>
+        <item name="android:layout_height">28.0dip</item>
+        <item name="android:padding">1.0dip</item>
+        <item name="android:clickable">true</item>
+        <item name="android:src">@drawable/widget_dface</item>
+    </style>
 
 </resources>

@@ -257,20 +257,14 @@ public class OSChinaApi {
      */
     public static void getCommentList(int id, int catalog, int page,
                                       AsyncHttpResponseHandler handler) {
-        // 从本地服务器获取
-//    	http://www.oschina.net/action/api/comment_list?pageIndex=0&catalog=3&pageSize=20&id=6066024
-//    	oschina/commentlist/catalog3id"+id+"page%d.xml
-        RequestParams params = new RequestParams();
-        String partUrl = String.format("oschina/commentlist/catalog3id%dpage%d.xml", new Object[]{id, page});
-        ApiHttpClient.getLocal(partUrl, params, handler);
 
-        // 从官方服务器获取
-//        RequestParams params = new RequestParams();
-//        params.put("catalog", catalog);
-//        params.put("id", id);
-//        params.put("pageIndex", page);
-//        params.put("pageSize", AppContext.PAGE_SIZE);
-//        ApiHttpClient.get("action/api/comment_list", params, handler);
+         //从官方服务器获取
+        RequestParams params = new RequestParams();
+        params.put("catalog", catalog+"");
+        params.put("id", id+"");
+        params.put("pageIndex", page+"");
+        params.put("pageSize", AppContext.PAGE_SIZE+"");
+        ApiHttpClient.get("action/api/comment_list", params, handler);
     }
 
     public static void getBlogCommentList(int id, int page,

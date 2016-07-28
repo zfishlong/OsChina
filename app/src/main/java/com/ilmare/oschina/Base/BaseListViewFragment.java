@@ -59,7 +59,7 @@ public abstract class BaseListViewFragment extends Fragment implements SwipeRefr
         @Override
         public void onFailure(Throwable error, String content) {
             super.onFailure(error, content);
-            Toast.makeText(getActivity(), content, 0).show();
+            Toast.makeText(getActivity(), content, Toast.LENGTH_SHORT).show();
             swiperefreshlayout.setRefreshing(false);
         }
     };
