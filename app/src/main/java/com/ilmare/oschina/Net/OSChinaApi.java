@@ -1,21 +1,17 @@
 package com.ilmare.oschina.Net;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import android.text.TextUtils;
+
+import com.ilmare.oschina.Beans.NewsList;
+import com.ilmare.oschina.Beans.Tweet;
+import com.ilmare.oschina.UI.AppContext;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import org.kymjs.kjframe.utils.KJLoger;
 
-import android.text.TextUtils;
-
-
-import com.ilmare.oschina.AppContext;
-import com.ilmare.oschina.Beans.BlogList;
-import com.ilmare.oschina.Beans.NewsList;
-import com.ilmare.oschina.Beans.Tweet;
-import com.ilmare.oschina.Beans.TweetsList;
-import com.ilmare.oschina.Utils.TLog;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 public class OSChinaApi {
 
@@ -109,28 +105,11 @@ public class OSChinaApi {
     public static void getTweetList(int uid, int page,
                                     AsyncHttpResponseHandler handler) {
 
-        RequestParams params = new RequestParams();
-
-        switch (uid) {
-            case TweetsList.CATALOG_LATEST:
-                ApiHttpClient.getLocal("oschina/list/tweet_list/page" + page + ".xml", params, handler);
-
-                return;
-            case TweetsList.CATALOG_HOT:
-                ApiHttpClient.getLocal("oschina/list/hottweet/page" + page + ".xml", params, handler);
-
-                return;
-            default:
-                ApiHttpClient.getLocal("oschina/list/mytweet/page" + page + ".xml", params, handler);
-
-                return;
-        }
-
-//      RequestParams params = new RequestParams();
-//	      params.put("uid", uid);
-//	      params.put("pageIndex", page);
-//	      params.put("pageSize", AppContext.PAGE_SIZE);
-//	      ApiHttpClient.get("action/api/tweet_list", params, handler);
+          RequestParams params = new RequestParams();
+	      params.put("uid", uid+"");
+	      params.put("pageIndex", page+"");
+	      params.put("pageSize", AppContext.PAGE_SIZE+"");
+	      ApiHttpClient.get("action/api/tweet_list", params, handler);
     }
 
     public static void getTweetTopicList(int page, String topic,

@@ -13,7 +13,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ilmare.oschina.Adapter.RecyclingPagerAdapter;
-import com.ilmare.oschina.AppContext;
 import com.ilmare.oschina.Base.BaseActivity;
 import com.ilmare.oschina.R;
 import com.ilmare.oschina.Widget.HackyViewPager;

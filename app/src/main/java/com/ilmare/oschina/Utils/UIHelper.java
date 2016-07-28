@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.v4.app.FragmentActivity;
+import android.os.Bundle;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -17,12 +17,13 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ZoomButtonsController;
-
-import com.ilmare.oschina.AppConfig;
-import com.ilmare.oschina.AppContext;
+import com.ilmare.oschina.Beans.Tweet;
 import com.ilmare.oschina.Beans.News;
+import com.ilmare.oschina.UI.AppConfig;
+import com.ilmare.oschina.UI.AppContext;
 import com.ilmare.oschina.UI.DetailActivity;
 import com.ilmare.oschina.UI.ImagePreviewActivity;
+import com.ilmare.oschina.UI.LoginActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,6 +66,25 @@ public class UIHelper {
         intent.putExtra(DetailActivity.BUNDLE_KEY_DISPLAY_TYPE,
                 DetailActivity.DISPLAY_NEWS);
 
+        context.startActivity(intent);
+    }
+
+
+    /**
+     * 显示动弹详情
+     *
+     * @param context
+     */
+    public static void showTweetDetail(Context context, Tweet tweet, int tweetid) {
+        Intent intent = new Intent(context, DetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("tweet_id", tweetid);
+        bundle.putInt(DetailActivity.BUNDLE_KEY_DISPLAY_TYPE,
+                DetailActivity.DISPLAY_TWEET);
+        if (tweet != null) {
+            bundle.putParcelable("tweet", tweet);
+        }
+        intent.putExtras(bundle);
         context.startActivity(intent);
     }
 
@@ -174,16 +194,20 @@ public class UIHelper {
             showLinkRedirect(context, urls.getObjType(), urls.getObjId(),
                     urls.getObjKey());
         } else {
-//            openBrowser(context, url);
+            openBrowser(context, url);
         }
     }
 
+    public static void openBrowser(Context context, String url) {
+
+    }
+
     //
-    private static void showImagePreview(Context context, int index, String[] imageUrls) {
+    public static void showImagePreview(Context context, int index, String[] imageUrls) {
         ImagePreviewActivity.showImagePrivew(context, index, imageUrls);
     }
 
-    private static void showLinkRedirect(Context context, int objType, int objId, String objKey) {
+    public static void showLinkRedirect(Context context, int objType, int objId, String objKey) {
         //TODO 转去链接
         System.out.println("转去链接");
     }
@@ -305,6 +329,11 @@ public class UIHelper {
         intent.putExtra("comment_count", count);
         intent.putExtra(DetailActivity.BUNDLE_KEY_DISPLAY_TYPE,
                 DetailActivity.DISPLAY_BLOG);
+        context.startActivity(intent);
+    }
+
+    public static void showLoginActivity(Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
         context.startActivity(intent);
     }
 }

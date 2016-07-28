@@ -2,17 +2,15 @@ package com.ilmare.oschina.Base;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBar.LayoutParams;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.ilmare.oschina.AppManager;
 import com.ilmare.oschina.R;
+import com.ilmare.oschina.UI.AppManager;
 import com.ilmare.oschina.Utils.StringUtils;
 import com.ilmare.oschina.Utils.TDevice;
-import android.support.v7.app.ActionBar.LayoutParams;
 
 /**
  * ===============================
@@ -36,6 +34,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(getLayoutId());
         AppManager.getAppManager().addActivity(this);
 
+        //初始化操作
+        init(savedInstanceState);
+
         //初始化Actionbar
         if (hasActionBar()) {
             supportActionBar = getSupportActionBar();
@@ -43,8 +44,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             initActionBar(supportActionBar);
         }
 
-        //初始化操作
-        init(savedInstanceState);
+
         //初始化View
         initView();
         //初始化数据

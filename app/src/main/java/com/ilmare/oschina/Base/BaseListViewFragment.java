@@ -27,6 +27,7 @@ import butterknife.InjectView;
  */
 public abstract class BaseListViewFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    public static final String BUNDLE_KEY_CATALOG ="bundle_key_catalog" ;
     @InjectView(R.id.listview)
     protected ListView listview;
     @InjectView(R.id.swiperefreshlayout)

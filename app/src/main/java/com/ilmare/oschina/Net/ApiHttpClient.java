@@ -3,7 +3,7 @@ package com.ilmare.oschina.Net;
 import android.content.Context;
 import android.util.Log;
 
-import com.ilmare.oschina.AppContext;
+import com.ilmare.oschina.UI.AppContext;
 import com.ilmare.oschina.Utils.TLog;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;

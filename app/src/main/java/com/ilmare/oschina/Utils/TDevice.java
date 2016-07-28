@@ -36,7 +36,7 @@ import android.view.ViewConfiguration;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
-import com.ilmare.oschina.AppContext;
+import com.ilmare.oschina.UI.AppContext;
 import com.ilmare.oschina.Base.BaseApplication;
 import com.ilmare.oschina.R;
 

@@ -2,6 +2,7 @@ package com.ilmare.oschina.UI;
 
 
 import com.ilmare.oschina.Fragment.DefaultFragment;
+import com.ilmare.oschina.Fragment.MyInformationFragment;
 import com.ilmare.oschina.Fragment.TweePagerFragment;
 import com.ilmare.oschina.Fragment.ZongHePagerFragment;
 import com.ilmare.oschina.R;
@@ -21,7 +22,7 @@ public enum MainTab {
 			DefaultFragment.class),
 			
 	ME(4, R.string.main_tab_name_my, R.drawable.tab_icon_me,
-			DefaultFragment.class);
+			MyInformationFragment.class);
 
 	private int idx;
 	private int resName;

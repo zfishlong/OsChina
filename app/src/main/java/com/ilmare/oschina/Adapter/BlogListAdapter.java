@@ -1,6 +1,5 @@
 package com.ilmare.oschina.Adapter;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +7,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ilmare.oschina.AppContext;
+import com.ilmare.oschina.UI.AppContext;
 import com.ilmare.oschina.Beans.Blog;
 import com.ilmare.oschina.Beans.BlogList;
 import com.ilmare.oschina.R;

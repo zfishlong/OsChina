@@ -7,7 +7,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ilmare.oschina.AppContext;
+import com.ilmare.oschina.UI.AppContext;
 import com.ilmare.oschina.Beans.News;
 import com.ilmare.oschina.Beans.NewsList;
 import com.ilmare.oschina.R;

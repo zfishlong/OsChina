@@ -1,7 +1,7 @@
 package com.ilmare.oschina.Net;
 
 
-import com.ilmare.oschina.AppContext;
+import com.ilmare.oschina.UI.AppContext;
 
 public class ApiClientHelper {
 	/**
