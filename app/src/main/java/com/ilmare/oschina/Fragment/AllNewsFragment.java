@@ -64,6 +64,7 @@ public class AllNewsFragment extends BaseListViewFragment implements AdapterView
         }else{
             newsListViewAdapter = new NewsListViewAdapter(newsList, getActivity());
             listview.setAdapter(newsListViewAdapter);
+
         }
 
         listview.setOnItemClickListener(this);
