@@ -6,6 +6,8 @@ import com.ilmare.oschina.Beans.NewsList;
 import com.ilmare.oschina.Utils.XmlUtils;
 import com.loopj.android.http.RequestParams;
 
+import java.io.Serializable;
+
 
 /**
  * ===============================
@@ -20,6 +22,16 @@ import com.loopj.android.http.RequestParams;
 public class RecommandNewsFragment extends BaseListViewFragment {
 
     private NewsList newsList;
+
+    @Override
+    protected String getCacheKeyPrefix() {
+        return null;
+    }
+
+    @Override
+    protected void executeOnReadCacheSuccess(Serializable seri) {
+
+    }
 
     @Override
     protected void loadFromServer() {

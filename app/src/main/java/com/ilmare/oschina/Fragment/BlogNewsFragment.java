@@ -5,15 +5,14 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.ilmare.oschina.Adapter.BlogListAdapter;
-import com.ilmare.oschina.Adapter.NewsListViewAdapter;
 import com.ilmare.oschina.Base.BaseListViewFragment;
 import com.ilmare.oschina.Beans.Blog;
 import com.ilmare.oschina.Beans.BlogList;
-import com.ilmare.oschina.Beans.NewsList;
 import com.ilmare.oschina.Net.OSChinaApi;
 import com.ilmare.oschina.Utils.UIHelper;
 import com.ilmare.oschina.Utils.XmlUtils;
-import com.loopj.android.http.RequestParams;
+
+import java.io.Serializable;
 
 
 /**
@@ -29,12 +28,12 @@ import com.loopj.android.http.RequestParams;
 public class BlogNewsFragment extends BaseListViewFragment implements AdapterView.OnItemClickListener {
 
 
-    public static final String BUNDLE_BLOG_TYPE = "BUNDLE_BLOG_TYPE";
+
     private String blogType;
-    private int mCurrentPage=0;
     private BlogList blogList;
     private BlogListAdapter blogListAdapter;
-
+    public static final String BUNDLE_BLOG_TYPE = "BUNDLE_BLOG_TYPE";
+    private static final String CACHE_KEY_PREFIX = "bloglist_";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,17 +44,37 @@ public class BlogNewsFragment extends BaseListViewFragment implements AdapterVie
         }
     }
 
+
+    @Override
+    protected String getCacheKeyPrefix() {
+        return CACHE_KEY_PREFIX+blogType;
+    }
+
+
+    @Override
+    protected void executeOnReadCacheSuccess(Serializable seri) {
+        //System.out.println("我加载缓存" + getCacheKeyPrefix());
+        blogList= (BlogList) seri;
+        blogListAdapter = new BlogListAdapter(getActivity(),blogList);
+        listview.setAdapter(blogListAdapter);
+        listview.setOnItemClickListener(this);
+    }
+
+
     @Override
     protected void loadFromServer() {
        OSChinaApi.getBlogList(blogType, mCurrentPage, mHandler);
     }
 
+
     @Override
     protected void onLoadSuccess(String content) {
         blogList = XmlUtils.toBean(BlogList.class, content.getBytes());
+
         blogListAdapter = new BlogListAdapter(getActivity(),blogList);
         listview.setAdapter(blogListAdapter);
         listview.setOnItemClickListener(this);
+        saveLocal(blogList);
     }
 
 

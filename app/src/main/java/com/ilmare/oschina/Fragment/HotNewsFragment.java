@@ -10,7 +10,8 @@ import com.ilmare.oschina.Beans.NewsList;
 import com.ilmare.oschina.Net.OSChinaApi;
 import com.ilmare.oschina.Utils.UIHelper;
 import com.ilmare.oschina.Utils.XmlUtils;
-import com.loopj.android.http.RequestParams;
+
+import java.io.Serializable;
 
 
 /**
@@ -27,14 +28,34 @@ public class HotNewsFragment extends BaseListViewFragment implements AdapterView
 
     private NewsList newsList;
 
-    private int mCurrentPage = 1;  //当前页
+//    private int mCurrentPage = 1;  //当前页
     private int mCatalog = 4;    //页分类
     private NewsListViewAdapter newsListViewAdapter;
+    private static final String CACHE_KEY_PREFIX = "newslist_";
+
+    @Override
+    protected String getCacheKeyPrefix() {
+        return CACHE_KEY_PREFIX+mCatalog;
+    }
+
+
+    @Override
+    protected void executeOnReadCacheSuccess(Serializable seri) {
+        System.out.println("我加载缓存" + getCacheKeyPrefix());
+        newsList= (NewsList) seri;
+        newsListViewAdapter = new NewsListViewAdapter(newsList,getActivity());
+        listview.setAdapter(newsListViewAdapter);
+        listview.setOnItemClickListener(this);
+    }
+
+
 
     @Override
     protected void loadFromServer() {
         OSChinaApi.getNewsList(mCatalog, mCurrentPage, mHandler);
     }
+
+
 
     @Override
     protected void onLoadSuccess(String content) {
@@ -42,6 +63,7 @@ public class HotNewsFragment extends BaseListViewFragment implements AdapterView
         newsListViewAdapter = new NewsListViewAdapter(newsList,getActivity());
         listview.setAdapter(newsListViewAdapter);
         listview.setOnItemClickListener(this);
+        saveLocal(newsList);
     }
 
 

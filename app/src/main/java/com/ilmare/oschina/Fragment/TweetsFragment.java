@@ -12,6 +12,8 @@ import com.ilmare.oschina.Net.OSChinaApi;
 import com.ilmare.oschina.Utils.UIHelper;
 import com.ilmare.oschina.Utils.XmlUtils;
 
+import java.io.Serializable;
+
 /**
  * ===============================
  * 作者: ilmare:
@@ -27,6 +29,30 @@ public class TweetsFragment extends BaseListViewFragment implements AdapterView.
     private int mCurrentPage=0;
     private TweetAdapter adapter;
 
+    private static final String CACHE_KEY_PREFIX = "tweetslist_";
+    private TweetsList tweetsList;
+
+    @Override
+    protected String getCacheKeyPrefix() {
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            String str = bundle.getString("topic");
+            if (str != null) {
+                return str;
+            }
+        }
+        return CACHE_KEY_PREFIX + mCatalog;
+    }
+
+    @Override
+    protected void executeOnReadCacheSuccess(Serializable seri) {
+        System.out.println("我加载缓存" + getCacheKeyPrefix());
+        tweetsList= (TweetsList) seri;
+        adapter = new TweetAdapter(getActivity(), tweetsList);
+        listview.setAdapter(adapter);
+        listview.setOnItemClickListener(this);
+    }
+
     @Override
     protected void loadFromServer() {
         Bundle bundle = getArguments();
@@ -38,10 +64,12 @@ public class TweetsFragment extends BaseListViewFragment implements AdapterView.
 
     @Override
     protected void onLoadSuccess(String content) {
-        TweetsList tweetsList = XmlUtils.toBean(TweetsList.class, content.getBytes());
-        adapter = new TweetAdapter(getActivity(),tweetsList);
+        tweetsList = XmlUtils.toBean(TweetsList.class, content.getBytes());
+        adapter = new TweetAdapter(getActivity(), tweetsList);
         listview.setAdapter(adapter);
         listview.setOnItemClickListener(this);
+        saveLocal(tweetsList);
+
     }
 
     @Override
@@ -51,8 +79,6 @@ public class TweetsFragment extends BaseListViewFragment implements AdapterView.
             UIHelper.showTweetDetail(view.getContext(), tweet, tweet.getId());
         }
     }
-
-    //
 
 
 

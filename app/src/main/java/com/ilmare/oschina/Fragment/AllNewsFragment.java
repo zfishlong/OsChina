@@ -12,6 +12,8 @@ import com.ilmare.oschina.Utils.UIHelper;
 import com.ilmare.oschina.Utils.XmlUtils;
 import com.loopj.android.http.RequestParams;
 
+import java.io.Serializable;
+
 
 /**
  * ===============================
@@ -27,8 +29,27 @@ public class AllNewsFragment extends BaseListViewFragment implements AdapterView
 
     private NewsList newsList;
     private int mCurrentPage = 1;  //当前页
-    private int mCatalog = 1;    //页分类
+    private int mCatalog = 1;      //页分类
     private NewsListViewAdapter newsListViewAdapter;
+    private static final String CACHE_KEY_PREFIX = "newslist_";
+
+
+    @Override
+    protected String getCacheKeyPrefix() {
+        return  CACHE_KEY_PREFIX + mCatalog;
+    }
+
+    @Override
+    protected void executeOnReadCacheSuccess(Serializable seri) {
+        //
+        System.out.println("我加载缓存" + getCacheKeyPrefix());
+        newsList= (NewsList) seri;
+        newsListViewAdapter = new NewsListViewAdapter(newsList, getActivity());
+        listview.setAdapter(newsListViewAdapter);
+        listview.setOnItemClickListener(this);
+    }
+
+
 
     @Override
     protected void loadFromServer() {
@@ -42,6 +63,7 @@ public class AllNewsFragment extends BaseListViewFragment implements AdapterView
 //      ApiHttpClient.post("action/api/news_list", getParams(), mHandler);
 
 //      方式四: (推荐)主线程 mCatalog = 1 资讯, mCatalog = 4 热点
+
         OSChinaApi.getNewsList(mCatalog, mCurrentPage, mHandler);
     }
 
@@ -51,6 +73,9 @@ public class AllNewsFragment extends BaseListViewFragment implements AdapterView
         newsListViewAdapter = new NewsListViewAdapter(newsList, getActivity());
         listview.setAdapter(newsListViewAdapter);
         listview.setOnItemClickListener(this);
+
+        //保存到本地
+        saveLocal(newsList);
     }
 
     protected String getUrl() {
