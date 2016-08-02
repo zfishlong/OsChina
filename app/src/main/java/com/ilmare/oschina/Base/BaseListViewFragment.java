@@ -9,8 +9,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.ProgressBar;
 
 import com.ilmare.oschina.Cache.CacheManager;
 import com.ilmare.oschina.R;
@@ -49,7 +50,6 @@ public abstract class BaseListViewFragment extends Fragment implements SwipeRefr
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = View.inflate(getActivity(), R.layout.fragment_pull_refresh_listview, null);
         ButterKnife.inject(this, view);
-
         return view;
     }
 
@@ -57,12 +57,34 @@ public abstract class BaseListViewFragment extends Fragment implements SwipeRefr
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ProgressBar ProgressBar = new ProgressBar(getActivity());
+        listview.addFooterView(ProgressBar);
+
+        //ListView设置 滚动监听
+        listview.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+                if (scrollState == SCROLL_STATE_IDLE && listview.getAdapter().getCount() == listview.getLastVisiblePosition() + 1) {
+                    //滑到最后了  加载更多
+                    loadMoreFromServer();
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+            }
+        });
+
         //请求数据
         requestData(true);
 
         //设置刷新监听
         swiperefreshlayout.setOnRefreshListener(this);
     }
+
+    protected abstract void loadMoreFromServer();
 
 
 
@@ -169,7 +191,8 @@ public abstract class BaseListViewFragment extends Fragment implements SwipeRefr
         @Override
         public void onFailure(Throwable error, String content) {
             super.onFailure(error, content);
-            Toast.makeText(getActivity(), content, Toast.LENGTH_SHORT).show();
+            String key = getCacheKey();
+            readCacheData(key);
             swiperefreshlayout.setRefreshing(false);
         }
     };
@@ -185,13 +208,8 @@ public abstract class BaseListViewFragment extends Fragment implements SwipeRefr
 
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        //ButterKnife.reset(this);
-    }
-
-    @Override
     public void onRefresh() {
+        mCurrentPage=0;
         loadFromServer();
     }
 

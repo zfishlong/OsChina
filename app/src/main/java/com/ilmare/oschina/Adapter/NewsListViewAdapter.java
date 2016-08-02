@@ -13,6 +13,8 @@ import com.ilmare.oschina.Beans.NewsList;
 import com.ilmare.oschina.R;
 import com.ilmare.oschina.Utils.StringUtils;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -28,22 +30,22 @@ import butterknife.InjectView;
 
 public class NewsListViewAdapter extends BaseAdapter {
 
-    private NewsList newsList;
+    private   List<News> list;
     private Context context;
 
     public NewsListViewAdapter(NewsList newsList,Context context){
-        this.newsList=newsList;
         this.context=context;
+       this.list= newsList.getList();
     }
 
     @Override
     public int getCount() {
-        return newsList.getList().size();
+        return list.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return newsList.getList().get(position);
+        return list.get(position);
     }
 
     @Override
@@ -63,7 +65,7 @@ public class NewsListViewAdapter extends BaseAdapter {
             viewHolder= (ViewHolder) convertView.getTag();
         }
 
-        News news = newsList.getList().get(position);
+        News news = list.get(position);
 
         viewHolder.title.setText(news.getTitle());
 
@@ -94,6 +96,15 @@ public class NewsListViewAdapter extends BaseAdapter {
         viewHolder.comment_count.setText(news.getCommentCount() + "");
 
         return convertView;
+    }
+
+    public void addDatas(NewsList newsList) {
+        if(list==null){
+            list=newsList.getList();
+        }else{
+            list.addAll(newsList.getList());
+        }
+
     }
 
 

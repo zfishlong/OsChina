@@ -3,6 +3,7 @@ package com.ilmare.oschina.Fragment;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.ilmare.oschina.Adapter.TweetAdapter;
 import com.ilmare.oschina.Base.BaseListViewFragment;
@@ -31,32 +32,49 @@ public class TweetsFragment extends BaseListViewFragment implements AdapterView.
 
     private static final String CACHE_KEY_PREFIX = "tweetslist_";
     private TweetsList tweetsList;
+    private int uid;
+    private boolean isLoadMore=false;
+    @Override
+    protected void loadMoreFromServer() {
+        if(!isLoadMore){
+            isLoadMore=true;
+            mCurrentPage++;
+            loadFromServer();
+        }
+    }
+
+
 
     @Override
     protected String getCacheKeyPrefix() {
         Bundle bundle = getArguments();
-        if (bundle != null) {
-            String str = bundle.getString("topic");
-            if (str != null) {
-                return str;
-            }
-        }
+        uid = bundle.getInt(BaseListViewFragment.BUNDLE_KEY_CATALOG, 0);
         return CACHE_KEY_PREFIX + mCatalog;
     }
 
+
     @Override
     protected void executeOnReadCacheSuccess(Serializable seri) {
-        System.out.println("我加载缓存" + getCacheKeyPrefix());
         tweetsList= (TweetsList) seri;
-        adapter = new TweetAdapter(getActivity(), tweetsList);
-        listview.setAdapter(adapter);
+        if(isLoadMore){
+            if(tweetsList.getList().size()==0){
+                Toast.makeText(getActivity(), "没有更多数据", Toast.LENGTH_SHORT).show();
+                mCurrentPage--;
+            }else{
+                adapter.addDatas(tweetsList);
+                adapter.notifyDataSetChanged();
+            }
+
+            isLoadMore=false;
+        } else {
+            adapter = new TweetAdapter(getActivity(), tweetsList);
+            listview.setAdapter(adapter);
+        }
         listview.setOnItemClickListener(this);
     }
 
     @Override
     protected void loadFromServer() {
-        Bundle bundle = getArguments();
-        int uid = bundle.getInt(BaseListViewFragment.BUNDLE_KEY_CATALOG, 0);
 //      TODO 登录判断
 //      TODO 加载更多
         OSChinaApi.getTweetList(uid, mCurrentPage, mHandler);
@@ -65,8 +83,21 @@ public class TweetsFragment extends BaseListViewFragment implements AdapterView.
     @Override
     protected void onLoadSuccess(String content) {
         tweetsList = XmlUtils.toBean(TweetsList.class, content.getBytes());
-        adapter = new TweetAdapter(getActivity(), tweetsList);
-        listview.setAdapter(adapter);
+        if(isLoadMore){
+            if(tweetsList.getList().size()==0){
+                Toast.makeText(getActivity(), "没有更多数据", Toast.LENGTH_SHORT).show();
+                mCurrentPage--;
+            }else{
+                adapter.addDatas(tweetsList);
+                adapter.notifyDataSetChanged();
+            }
+
+            isLoadMore=false;
+        } else {
+            adapter = new TweetAdapter(getActivity(), tweetsList);
+            listview.setAdapter(adapter);
+        }
+
         listview.setOnItemClickListener(this);
         saveLocal(tweetsList);
 
@@ -74,6 +105,9 @@ public class TweetsFragment extends BaseListViewFragment implements AdapterView.
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        //
+        if(position==adapter.getCount()) return ;
+
         Tweet tweet = adapter.getItem(position);
         if (tweet != null) {
             UIHelper.showTweetDetail(view.getContext(), tweet, tweet.getId());

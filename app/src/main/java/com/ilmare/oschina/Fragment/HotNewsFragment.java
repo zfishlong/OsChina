@@ -2,6 +2,7 @@ package com.ilmare.oschina.Fragment;
 
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.ilmare.oschina.Adapter.NewsListViewAdapter;
 import com.ilmare.oschina.Base.BaseListViewFragment;
@@ -28,10 +29,20 @@ public class HotNewsFragment extends BaseListViewFragment implements AdapterView
 
     private NewsList newsList;
 
-//    private int mCurrentPage = 1;  //当前页
     private int mCatalog = 4;    //页分类
     private NewsListViewAdapter newsListViewAdapter;
     private static final String CACHE_KEY_PREFIX = "newslist_";
+    private boolean isLoadMore=false;
+
+
+    @Override
+    protected void loadMoreFromServer() {
+        if(!isLoadMore){
+            isLoadMore=true;
+            mCurrentPage++;
+            loadFromServer();
+        }
+    }
 
     @Override
     protected String getCacheKeyPrefix() {
@@ -41,13 +52,24 @@ public class HotNewsFragment extends BaseListViewFragment implements AdapterView
 
     @Override
     protected void executeOnReadCacheSuccess(Serializable seri) {
-        System.out.println("我加载缓存" + getCacheKeyPrefix());
         newsList= (NewsList) seri;
-        newsListViewAdapter = new NewsListViewAdapter(newsList,getActivity());
-        listview.setAdapter(newsListViewAdapter);
+        if(isLoadMore){
+            if(newsList.getList().size()==0){
+                Toast.makeText(getActivity(), "没有数据", Toast.LENGTH_SHORT).show();
+                mCurrentPage--;
+            }else{
+                newsListViewAdapter.addDatas(newsList);
+                newsListViewAdapter.notifyDataSetChanged();
+            }
+
+            isLoadMore=false;
+        }else{
+            newsListViewAdapter = new NewsListViewAdapter(newsList, getActivity());
+            listview.setAdapter(newsListViewAdapter);
+        }
+
         listview.setOnItemClickListener(this);
     }
-
 
 
     @Override
@@ -60,8 +82,21 @@ public class HotNewsFragment extends BaseListViewFragment implements AdapterView
     @Override
     protected void onLoadSuccess(String content) {
         newsList = XmlUtils.toBean(NewsList.class, content.getBytes());
-        newsListViewAdapter = new NewsListViewAdapter(newsList,getActivity());
-        listview.setAdapter(newsListViewAdapter);
+        if(isLoadMore){
+            if(newsList.getList().size()==0){
+                Toast.makeText(getActivity(), "没有数据", Toast.LENGTH_SHORT).show();
+                mCurrentPage--;
+            }else{
+                newsListViewAdapter.addDatas(newsList);
+                newsListViewAdapter.notifyDataSetChanged();
+            }
+
+            isLoadMore=false;
+        }else{
+            newsListViewAdapter = new NewsListViewAdapter(newsList, getActivity());
+            listview.setAdapter(newsListViewAdapter);
+        }
+
         listview.setOnItemClickListener(this);
         saveLocal(newsList);
     }

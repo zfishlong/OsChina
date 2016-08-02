@@ -36,6 +36,8 @@ import org.kymjs.kjframe.bitmap.BitmapCallBack;
 import org.kymjs.kjframe.bitmap.BitmapHelper;
 import org.kymjs.kjframe.utils.DensityUtils;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -52,22 +54,23 @@ import butterknife.InjectView;
 public class TweetAdapter extends BaseAdapter {
 
 
+    private  List<Tweet> list;
     private Context context;
-    private TweetsList tweetsList;
     private Bitmap recordBitmap;
     private final KJBitmap kjb = new KJBitmap();
+
     public TweetAdapter(Context context,TweetsList tweetsList){
         this.context=context;
-        this.tweetsList=tweetsList;
+        this.list = tweetsList.getList();
     }
     @Override
     public int getCount() {
-        return tweetsList.getList().size();
+        return list.size();
     }
 
     @Override
     public Tweet getItem(int position) {
-        return tweetsList.getList().get(position);
+        return list.get(position);
     }
 
     @Override
@@ -87,7 +90,7 @@ public class TweetAdapter extends BaseAdapter {
             vh = (ViewHolder) convertView.getTag();
         }
 
-        final Tweet tweet = tweetsList.getList().get(position);
+        final Tweet tweet = list.get(position);
 
 
         if (tweet.getAuthorid() ==  AppContext.getInstance().getLoginUid()) {
@@ -270,6 +273,10 @@ public class TweetAdapter extends BaseAdapter {
                 R.drawable.audio3);
         recordBitmap = ImageUtils.zoomBitmap(recordBitmap,
                 DensityUtils.dip2px(cxt, 20f), DensityUtils.dip2px(cxt, 20f));
+    }
+
+    public void addDatas(TweetsList tweetsList) {
+        list.addAll(tweetsList.getList());
     }
 
     static class ViewHolder {

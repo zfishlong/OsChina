@@ -3,6 +3,7 @@ package com.ilmare.oschina.Fragment;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.ilmare.oschina.Adapter.BlogListAdapter;
 import com.ilmare.oschina.Base.BaseListViewFragment;
@@ -13,8 +14,6 @@ import com.ilmare.oschina.Utils.UIHelper;
 import com.ilmare.oschina.Utils.XmlUtils;
 
 import java.io.Serializable;
-
-
 /**
  * ===============================
  * 作者: ilmare:
@@ -24,16 +23,14 @@ import java.io.Serializable;
  * 描述：
  * ===============================
  */
-
 public class BlogNewsFragment extends BaseListViewFragment implements AdapterView.OnItemClickListener {
-
-
 
     private String blogType;
     private BlogList blogList;
     private BlogListAdapter blogListAdapter;
     public static final String BUNDLE_BLOG_TYPE = "BUNDLE_BLOG_TYPE";
     private static final String CACHE_KEY_PREFIX = "bloglist_";
+    private boolean isLoadMore=false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +43,15 @@ public class BlogNewsFragment extends BaseListViewFragment implements AdapterVie
 
 
     @Override
+    protected void loadMoreFromServer() {
+        if(!isLoadMore){
+            isLoadMore=true;
+            mCurrentPage++;
+            loadFromServer();
+        }
+    }
+
+    @Override
     protected String getCacheKeyPrefix() {
         return CACHE_KEY_PREFIX+blogType;
     }
@@ -53,10 +59,21 @@ public class BlogNewsFragment extends BaseListViewFragment implements AdapterVie
 
     @Override
     protected void executeOnReadCacheSuccess(Serializable seri) {
-        //System.out.println("我加载缓存" + getCacheKeyPrefix());
         blogList= (BlogList) seri;
-        blogListAdapter = new BlogListAdapter(getActivity(),blogList);
-        listview.setAdapter(blogListAdapter);
+
+        if(isLoadMore){
+            if(blogList.getList().size()==0){
+                Toast.makeText(getActivity(), "没有数据", Toast.LENGTH_SHORT).show();
+                mCurrentPage--;
+            }else{
+                blogListAdapter.addDatas(blogList);
+                blogListAdapter.notifyDataSetChanged();
+            }
+            isLoadMore=false;
+        }else{
+            blogListAdapter = new BlogListAdapter(getActivity(),blogList);
+            listview.setAdapter(blogListAdapter);
+        }
         listview.setOnItemClickListener(this);
     }
 
@@ -71,8 +88,19 @@ public class BlogNewsFragment extends BaseListViewFragment implements AdapterVie
     protected void onLoadSuccess(String content) {
         blogList = XmlUtils.toBean(BlogList.class, content.getBytes());
 
-        blogListAdapter = new BlogListAdapter(getActivity(),blogList);
-        listview.setAdapter(blogListAdapter);
+        if(isLoadMore){
+            if(blogList.getList().size()==0){
+                Toast.makeText(getActivity(), "没有数据", Toast.LENGTH_SHORT).show();
+                mCurrentPage--;
+            }else{
+                blogListAdapter.addDatas(blogList);
+                blogListAdapter.notifyDataSetChanged();
+            }
+            isLoadMore=false;
+        }else{
+            blogListAdapter = new BlogListAdapter(getActivity(),blogList);
+            listview.setAdapter(blogListAdapter);
+        }
         listview.setOnItemClickListener(this);
         saveLocal(blogList);
     }

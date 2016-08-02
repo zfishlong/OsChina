@@ -24,6 +24,11 @@ public class RecommandNewsFragment extends BaseListViewFragment {
     private NewsList newsList;
 
     @Override
+    protected void loadMoreFromServer() {
+        System.out.println("加载更多。。");
+    }
+
+    @Override
     protected String getCacheKeyPrefix() {
         return null;
     }

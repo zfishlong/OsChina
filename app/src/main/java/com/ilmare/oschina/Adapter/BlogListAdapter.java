@@ -13,6 +13,8 @@ import com.ilmare.oschina.Beans.BlogList;
 import com.ilmare.oschina.R;
 import com.ilmare.oschina.Utils.StringUtils;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -25,25 +27,24 @@ import butterknife.InjectView;
  * 描述：
  * ===============================
  */
-
 public class BlogListAdapter extends BaseAdapter {
 
     private Context context;
-    private BlogList blogList;
+    private final List<Blog> list;
 
     public BlogListAdapter(Context context,BlogList blogList){
         this.context=context;
-        this.blogList=blogList;
+        this.list = blogList.getList();
     }
 
     @Override
     public int getCount() {
-        return blogList.getList().size();
+        return list.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return blogList.getList().get(position);
+        return list.get(position);
     }
 
     @Override
@@ -63,7 +64,7 @@ public class BlogListAdapter extends BaseAdapter {
             vh = (ViewHolder) convertView.getTag();
         }
 
-        Blog blog = blogList.getList().get(position);
+        Blog blog = list.get(position);
 
         vh.tip.setVisibility(View.VISIBLE);
         if (blog.getDocumenttype() == Blog.DOC_TYPE_ORIGINAL) {
@@ -94,6 +95,10 @@ public class BlogListAdapter extends BaseAdapter {
         vh.time.setText(StringUtils.friendly_time(blog.getPubDate()));
         vh.comment_count.setText(blog.getCommentCount() + "");
         return convertView;
+    }
+
+    public void addDatas(BlogList blogList) {
+        list.addAll(blogList.getList());
     }
 
     static class ViewHolder {
