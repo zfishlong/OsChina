@@ -28,45 +28,48 @@ import java.io.Serializable;
 
 public class TweetsFragment extends BaseListViewFragment implements AdapterView.OnItemClickListener {
 
-    private int mCurrentPage=0;
+    private int mCurrentPage = 0;
     private TweetAdapter adapter;
 
     private static final String CACHE_KEY_PREFIX = "tweetslist_";
     private TweetsList tweetsList;
     private int uid;
-    private boolean isLoadMore=false;
+    private boolean isLoadMore = false;
+
     @Override
     protected void loadMoreFromServer() {
-        if(!isLoadMore){
-            isLoadMore=true;
+        if (!isLoadMore) {
+            isLoadMore = true;
             mCurrentPage++;
             loadFromServer();
         }
     }
 
 
-
     @Override
     protected String getCacheKeyPrefix() {
         Bundle bundle = getArguments();
         uid = bundle.getInt(BaseListViewFragment.BUNDLE_KEY_CATALOG, 0);
-        return CACHE_KEY_PREFIX + mCatalog;
+        if (uid != -1 && uid != 0) {
+            uid = AppContext.getInstance().getLoginUid();
+        }
+        return CACHE_KEY_PREFIX + uid;
     }
 
 
     @Override
     protected void executeOnReadCacheSuccess(Serializable seri) {
-        tweetsList= (TweetsList) seri;
-        if(isLoadMore){
-            if(tweetsList.getList().size()==0){
+        tweetsList = (TweetsList) seri;
+        if (isLoadMore) {
+            if (tweetsList.getList().size() == 0) {
                 Toast.makeText(getActivity(), "没有更多数据", Toast.LENGTH_SHORT).show();
                 mCurrentPage--;
-            }else{
+            } else {
                 adapter.addDatas(tweetsList);
                 adapter.notifyDataSetChanged();
             }
 
-            isLoadMore=false;
+            isLoadMore = false;
         } else {
             adapter = new TweetAdapter(getActivity(), tweetsList);
             listview.setAdapter(adapter);
@@ -76,26 +79,27 @@ public class TweetsFragment extends BaseListViewFragment implements AdapterView.
 
     @Override
     protected void loadFromServer() {
-//      TODO 登录判断
-        if(uid!=-1 && uid!=0){
-            uid=AppContext.getInstance().getLoginUid();
+        if (uid != -1 && uid != 0) {
+            uid = AppContext.getInstance().getLoginUid();
         }
         OSChinaApi.getTweetList(uid, mCurrentPage, mHandler);
     }
 
     @Override
     protected void onLoadSuccess(String content) {
+        if (content == null || "".equals(content)) return;
+
         tweetsList = XmlUtils.toBean(TweetsList.class, content.getBytes());
-        if(isLoadMore){
-            if(tweetsList.getList().size()==0){
+        if (isLoadMore) {
+            if (tweetsList.getList().size() == 0) {
                 Toast.makeText(getActivity(), "没有更多数据", Toast.LENGTH_SHORT).show();
                 mCurrentPage--;
-            }else{
+            } else {
                 adapter.addDatas(tweetsList);
                 adapter.notifyDataSetChanged();
             }
 
-            isLoadMore=false;
+            isLoadMore = false;
         } else {
             adapter = new TweetAdapter(getActivity(), tweetsList);
             listview.setAdapter(adapter);
@@ -109,14 +113,13 @@ public class TweetsFragment extends BaseListViewFragment implements AdapterView.
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //
-        if(position==adapter.getCount()) return ;
+        if (position == adapter.getCount()) return;
 
         Tweet tweet = adapter.getItem(position);
         if (tweet != null) {
             UIHelper.showTweetDetail(view.getContext(), tweet, tweet.getId());
         }
     }
-
 
 
 }

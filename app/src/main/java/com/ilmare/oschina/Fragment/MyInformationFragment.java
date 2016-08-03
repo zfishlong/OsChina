@@ -1,5 +1,7 @@
 package com.ilmare.oschina.Fragment;
 
+import android.content.Context;
+import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -7,16 +9,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ilmare.oschina.Base.BaseFragment;
-import com.ilmare.oschina.Net.OSChinaApi;
-import com.ilmare.oschina.Utils.XmlUtils;
-import com.ilmare.oschina.Utils.StringUtils;
 import com.ilmare.oschina.Beans.MyInformation;
 import com.ilmare.oschina.Beans.User;
+import com.ilmare.oschina.Cache.CacheManager;
+import com.ilmare.oschina.Net.OSChinaApi;
 import com.ilmare.oschina.R;
 import com.ilmare.oschina.UI.AppContext;
+import com.ilmare.oschina.Utils.StringUtils;
+import com.ilmare.oschina.Utils.TDevice;
 import com.ilmare.oschina.Utils.UIHelper;
+import com.ilmare.oschina.Utils.XmlUtils;
 import com.ilmare.oschina.Widget.AvatarView;
 import com.ilmare.oschina.Widget.CircleImageView;
+
+import java.io.Serializable;
+import java.lang.ref.WeakReference;
 
 import butterknife.InjectView;
 
@@ -78,6 +85,8 @@ public class MyInformationFragment extends BaseFragment {
     @InjectView(R.id.rootview)
     LinearLayout rootview;
     private User mInfo;
+    private AsyncTask<String, Void, User> mCacheTask;
+    private boolean mIsWatingLogin=true;
 
     @Override
     protected void init() {
@@ -96,8 +105,20 @@ public class MyInformationFragment extends BaseFragment {
 
     @Override
     protected void initData() {
-        int uid = AppContext.getInstance().getLoginUid();
-        OSChinaApi.getMyInformation(uid, mHandler);
+        if(AppContext.getInstance().isLogin()) {
+            mIsWatingLogin = false;
+            String key = getCacheKey();
+            if (TDevice.hasInternet() && (!CacheManager.isExistDataCache(getActivity(), key))) {
+                int uid = AppContext.getInstance().getLoginUid();
+                OSChinaApi.getMyInformation(uid, mHandler);
+            } else {
+                readCacheData(key);
+            }
+        }else{
+            mIsWatingLogin = true;
+        }
+
+
     }
 
     @Override
@@ -106,16 +127,19 @@ public class MyInformationFragment extends BaseFragment {
     }
 
 
-
-
     @Override
     protected void onLoadSuccess(String content) {
         mInfo = XmlUtils.toBean(MyInformation.class, content.getBytes()).getUser();
         if (mInfo != null) {
             fillUI();
             AppContext.getInstance().updateUserInfo(mInfo);
-            //new SaveCacheTask(getActivity(), mInfo, getCacheKey()).execute();
+            //保存到本地
+            new SaveCacheTask(getActivity(), mInfo, getCacheKey()).execute();
         }
+    }
+
+    private String getCacheKey() {
+        return "my_information" + AppContext.getInstance().getLoginUid();
     }
 
     private void fillUI() {
@@ -123,9 +147,8 @@ public class MyInformationFragment extends BaseFragment {
             return;
         ivAvatar.setAvatarUrl(mInfo.getPortrait());
         tvName.setText(mInfo.getName());
-        ivGender
-                .setImageResource(StringUtils.toInt(mInfo.getGender()) != 2 ? R.drawable.userinfo_icon_male
-                        : R.drawable.userinfo_icon_female);
+        ivGender.setImageResource(StringUtils.toInt(mInfo.getGender()) != 2 ? R.drawable.userinfo_icon_male
+                : R.drawable.userinfo_icon_female);
         tvScore.setText(String.valueOf(mInfo.getScore()));
         tvFavorite.setText(String.valueOf(mInfo.getFavoritecount()));
         tvFollowing.setText(String.valueOf(mInfo.getFollowers()));
@@ -135,15 +158,81 @@ public class MyInformationFragment extends BaseFragment {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.rl_note:
+
+        if (mIsWatingLogin) {
+            AppContext.showToast(R.string.unlogin);
+            UIHelper.showLoginActivity(getActivity());
+            return;
+        }
+        switch (v.getId()) {
+            case R.id.rl_note:  //
+                AppContext.showToast("便签");
 //                UIHelper.showSimpleBack(getActivity(),SimpleBackPage.NOTE);
                 break;
             case R.id.rl_user_unlogin:
-                UIHelper.showLoginActivity(getActivity());
+                AppContext.showToast("便签");
+//                 UIHelper.showLoginActivity(getActivity());
                 break;
+
+        }
+    }
+
+    private void readCacheData(String key) {
+        cancelReadCacheTask();
+        mCacheTask = new CacheTask(getActivity()).execute(key);
+    }
+
+    private void cancelReadCacheTask() {
+        if (mCacheTask != null) {
+            mCacheTask.cancel(true);
+            mCacheTask = null;
+        }
+    }
+
+
+    private class CacheTask extends AsyncTask<String, Void, User> {
+        private final WeakReference<Context> mContext;
+
+        private CacheTask(Context context) {
+            mContext = new WeakReference<Context>(context);
         }
 
+        @Override
+        protected User doInBackground(String... params) {
+            Serializable seri = CacheManager.readObject(mContext.get(),
+                    params[0]);
+            if (seri == null) {
+                return null;
+            } else {
+                return (User) seri;
+            }
+        }
 
+        @Override
+        protected void onPostExecute(User info) {
+            super.onPostExecute(info);
+            if (info != null) {
+                mInfo = info;
+                fillUI();
+            }
+        }
+    }
+
+    private class SaveCacheTask extends AsyncTask<Void, Void, Void> {
+        private final WeakReference<Context> mContext;
+        private final Serializable seri;
+        private final String key;
+
+        private SaveCacheTask(Context context, Serializable seri, String key) {
+            mContext = new WeakReference<Context>(context);
+            this.seri = seri;
+            this.key = key;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            CacheManager.saveObject(mContext.get(), seri, key);
+            return null;
+        }
     }
 }
