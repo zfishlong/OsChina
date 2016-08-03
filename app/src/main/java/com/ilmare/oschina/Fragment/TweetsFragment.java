@@ -10,6 +10,7 @@ import com.ilmare.oschina.Base.BaseListViewFragment;
 import com.ilmare.oschina.Beans.Tweet;
 import com.ilmare.oschina.Beans.TweetsList;
 import com.ilmare.oschina.Net.OSChinaApi;
+import com.ilmare.oschina.UI.AppContext;
 import com.ilmare.oschina.Utils.UIHelper;
 import com.ilmare.oschina.Utils.XmlUtils;
 
@@ -76,7 +77,9 @@ public class TweetsFragment extends BaseListViewFragment implements AdapterView.
     @Override
     protected void loadFromServer() {
 //      TODO 登录判断
-//      TODO 加载更多
+        if(uid!=-1 && uid!=0){
+            uid=AppContext.getInstance().getLoginUid();
+        }
         OSChinaApi.getTweetList(uid, mCurrentPage, mHandler);
     }
 

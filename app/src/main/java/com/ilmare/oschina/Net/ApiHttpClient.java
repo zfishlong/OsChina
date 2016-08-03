@@ -41,7 +41,7 @@ public class ApiHttpClient {
     }
 
     public static void clearUserCookies(Context context) {
-        // (new HttpClientCookieStore(context)).a();
+         //(new HttpClientCookieStore(context)).a();
     }
 
     public static void delete(String partUrl, AsyncHttpResponseHandler handler) {

@@ -9,11 +9,15 @@ import com.ilmare.oschina.Beans.User;
 import com.ilmare.oschina.Net.ApiHttpClient;
 import com.ilmare.oschina.Utils.CyptoUtils;
 import com.ilmare.oschina.Utils.StringUtils;
+import com.ilmare.oschina.Utils.TLog;
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.PersistentCookieStore;
+
+import org.kymjs.kjframe.bitmap.BitmapConfig;
+import org.kymjs.kjframe.utils.KJLoger;
 
 import java.util.Properties;
 import java.util.UUID;
-
 /**
  * 全局应用程序类：用于保存和调用全局应用配置及访问网络数据
  */
@@ -39,17 +43,16 @@ public class AppContext extends BaseApplication {
         // 初始化网络请求
         AsyncHttpClient client = new AsyncHttpClient();
         // KGBJVUYIBHS2345UIY 令牌
-//        PersistentCookieStore myCookieStore = new PersistentCookieStore(this);
-//        client.setCookieStore(myCookieStore);
+        PersistentCookieStore myCookieStore = new PersistentCookieStore(this);
+        client.setCookieStore(myCookieStore);
 
         ApiHttpClient.setHttpClient(client);
-//        ApiHttpClient.setCookie(ApiHttpClient.getCookie(this));
-//
-//        // Log控制器
-//        KJLoger.openDebutLog(true);
-//        TLog.DEBUG = BuildConfig.DEBUG;
-//        // Bitmap缓存地址
-//        BitmapConfig.CACHEPATH = "OSChina/imagecache";
+        ApiHttpClient.setCookie(ApiHttpClient.getCookie(this));
+        // Log控制器
+        KJLoger.openDebutLog(true);
+        TLog.DEBUG =true;
+        // Bitmap缓存地址
+        BitmapConfig.CACHEPATH = "OSChina/imagecache";
     }
 
     private void initLogin() {

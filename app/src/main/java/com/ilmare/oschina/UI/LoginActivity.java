@@ -8,17 +8,26 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import com.ilmare.oschina.Beans.LoginUserBean;
-import com.ilmare.oschina.Beans.Result;
-import com.ilmare.oschina.Utils.XmlUtils;
 
 import com.ilmare.oschina.Base.BaseActivity;
+import com.ilmare.oschina.Beans.LoginUserBean;
+import com.ilmare.oschina.Beans.Result;
+import com.ilmare.oschina.Net.ApiHttpClient;
 import com.ilmare.oschina.Net.OSChinaApi;
 import com.ilmare.oschina.R;
 import com.ilmare.oschina.Utils.StringUtils;
 import com.ilmare.oschina.Utils.TDevice;
+import com.ilmare.oschina.Utils.TLog;
+import com.ilmare.oschina.Utils.XmlUtils;
 import com.ilmare.oschina.Widget.SimpleTextWatcher;
+import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+
+import org.apache.http.client.CookieStore;
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.protocol.HttpContext;
+import org.kymjs.kjframe.http.HttpConfig;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -36,6 +45,7 @@ import butterknife.InjectView;
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
 
+    private  String TAG =this.getClass().getSimpleName() ;
     @InjectView(R.id.et_username)
     AutoCompleteTextView etUsername;
     @InjectView(R.id.iv_clear_username)
@@ -148,7 +158,27 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         @Override
         public void onSuccess(String content) {
             super.onSuccess(content);
-            LoginUserBean user = XmlUtils.toBean(LoginUserBean.class,
+            try {
+                AsyncHttpClient client = ApiHttpClient.getHttpClient();
+                HttpContext httpContext = client.getHttpContext();
+                CookieStore cookies = (CookieStore) httpContext
+                        .getAttribute(ClientContext.COOKIE_STORE);
+                if (cookies != null) {
+                    // 保存cookie
+                    String tmpcookies = "";
+                    for (Cookie c : cookies.getCookies()) {
+                        TLog.log(TAG,
+                                "cookie:" + c.getName() + " " + c.getValue());
+                        tmpcookies += (c.getName() + "=" + c.getValue()) + ";";
+                    }
+                    TLog.log(TAG, "cookies:" + tmpcookies);
+                    AppContext.getInstance().setProperty(AppConfig.CONF_COOKIE,
+                            tmpcookies);
+                    ApiHttpClient.setCookie(ApiHttpClient.getCookie(AppContext
+                            .getInstance()));
+                    HttpConfig.sCookie = tmpcookies;
+                }
+                LoginUserBean user = XmlUtils.toBean(LoginUserBean.class,
                         content.getBytes());
                 Result res = user.getResult();
                 if (res.OK()) {
@@ -163,6 +193,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     AppContext.getInstance().cleanLoginInfo();
                     AppContext.showToast(res.getErrorMessage());
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -179,7 +212,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
           //TODO 发广播
 //        Intent data = new Intent();
 //        data.putExtra(BUNDLE_KEY_REQUEST_CODE, requestCode);
-//        setResult(RESULT_OK, data);
+//        setReslt(RESULT_OK, data);
 //        this.sendBroadcast(new Intent(Constants.INTENT_ACTION_USER_CHANGE));
         finish();
     }
