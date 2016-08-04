@@ -162,16 +162,16 @@ public class OSChinaApi {
 
 //    	http://www.oschina.net/action/api/active_list?uid=993896&pageIndex=0&catalog=1&pageSize=20 
 //    	本地路径:oschina/list/active_list/page0.xml
-        RequestParams params = new RequestParams();
-        params.put("uid", uid + "");
-        ApiHttpClient.getLocal(String.format("oschina/list/active_list%d/page%d.xml", catalog, page), params, handler);
-
 //        RequestParams params = new RequestParams();
-//        params.put("uid", uid);
-//        params.put("catalog", catalog);
-//        params.put("pageIndex", page);
-//        params.put("pageSize", AppContext.PAGE_SIZE);
-//        ApiHttpClient.get("action/api/active_list", params, handler);
+//        params.put("uid", uid + "");
+//        ApiHttpClient.getLocal(String.format("oschina/list/active_list%d/page%d.xml", catalog, page), params, handler);
+
+        RequestParams params = new RequestParams();
+        params.put("uid", uid+"");
+        params.put("catalog", catalog+"");
+        params.put("pageIndex", page+"");
+        params.put("pageSize", AppContext.PAGE_SIZE+"");
+        ApiHttpClient.get("action/api/active_list", params, handler);
     }
 
     public static void getFriendList(int uid, int relation, int page,

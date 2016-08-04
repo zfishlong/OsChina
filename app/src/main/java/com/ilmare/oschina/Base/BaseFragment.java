@@ -55,6 +55,9 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         ButterKnife.reset(this);
     }
 
+    public boolean onBackPressed() {
+        return false;
+    }
 
     protected AsyncHttpResponseHandler mHandler = new AsyncHttpResponseHandler() {
         @Override

@@ -85,6 +85,17 @@ public class TweetsFragment extends BaseListViewFragment implements AdapterView.
         OSChinaApi.getTweetList(uid, mCurrentPage, mHandler);
     }
 
+    public String getTopic() {
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            String str = bundle.getString("topic");
+            if (str != null) {
+                return str;
+            }
+        }
+        return "";
+    }
+
     @Override
     protected void onLoadSuccess(String content) {
         if (content == null || "".equals(content)) return;

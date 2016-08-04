@@ -62,12 +62,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     protected void initData() {
+        //ok  do nothing
 
     }
 
     @Override
     protected void initView() {
-
+        //ok  do nothing
     }
 
     @Override

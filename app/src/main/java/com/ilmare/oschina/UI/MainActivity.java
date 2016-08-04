@@ -61,7 +61,10 @@ public class MainActivity extends AppCompatActivity  implements View.OnTouchList
         if (Build.VERSION.SDK_INT > 10) {
             tabhost.getTabWidget().setShowDividers(0);
         }
+
         initTabs();
+
+
         restoreActionBar();
         quickOptionIv.setOnClickListener(this);
     }
@@ -129,7 +132,6 @@ public class MainActivity extends AppCompatActivity  implements View.OnTouchList
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerToggle.syncState();//该方法会自动和actionBar关联
 
-//      setSupportActionBar(toolbar);  如果使用toolbar 使用这句替代
     }
 
 

@@ -1,7 +1,6 @@
 package com.ilmare.oschina.UI;
 
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -16,7 +15,9 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 
+import com.ilmare.oschina.Fragment.TweetPubFragment;
 import com.ilmare.oschina.R;
+import com.ilmare.oschina.Utils.UIHelper;
 
 
 public class QuickOptionDialog extends Dialog implements
@@ -106,18 +107,7 @@ public class QuickOptionDialog extends Dialog implements
         case R.id.ly_quick_option_photo:
             onClickTweetPub(R.id.ly_quick_option_photo);
             break;
-//        case R.id.ly_quick_option_voice:
-//            UIHelper.showSimpleBack(getContext(), SimpleBackPage.RECORD);
-//            break;
-//        case R.id.ly_quick_option_scan:
-//            UIHelper.showScanActivity(getContext());
-//            break;
-//        case R.id.ly_quick_option_note:
-            // UIHelper.showSimpleBack(getContext(), SimpleBackPage.FIND_USER);
-//            onClickNote();
-            //UIHelper.showSimpleBack(getContext(), SimpleBackPage.FIND_USER);
-            // onClickNote();
-//            break;
+
         default:
             break;
         }
@@ -133,18 +123,18 @@ public class QuickOptionDialog extends Dialog implements
         int type = -1;
         switch (id) {
         case R.id.ly_quick_option_album:
-//            type = TweetPubFragment.ACTION_TYPE_ALBUM;
+            type = TweetPubFragment.ACTION_TYPE_ALBUM;
             break;
         case R.id.ly_quick_option_photo:
-//            type = TweetPubFragment.ACTION_TYPE_PHOTO;
+            type = TweetPubFragment.ACTION_TYPE_PHOTO;
             break;
         default:
             break;
         }
 
-//        bundle.putInt(TweetPubFragment.ACTION_TYPE, type);
-//        UIHelper.showTweetActivity(getContext(), SimpleBackPage.TWEET_PUB,
-//                bundle);
+        bundle.putInt(TweetPubFragment.ACTION_TYPE, type);
+        UIHelper.showTweetActivity(getContext(), SimpleBackPage.TWEET_PUB, bundle);
+
     }
 
 

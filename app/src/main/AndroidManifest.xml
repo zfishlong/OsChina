@@ -53,6 +53,8 @@
 
         <activity android:name=".UI.ImagePreviewActivity"></activity>
         <activity android:name=".UI.LoginActivity"></activity>
+        <activity android:name=".UI.TweetActivity"></activity>
+        <activity android:name=".UI.SimpleBackActivity"></activity>
     </application>
 
 

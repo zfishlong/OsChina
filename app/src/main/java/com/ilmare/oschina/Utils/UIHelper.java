@@ -1,5 +1,6 @@
 package com.ilmare.oschina.Utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,7 +14,6 @@ import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
-import android.annotation.SuppressLint;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -28,6 +28,9 @@ import com.ilmare.oschina.UI.AppContext;
 import com.ilmare.oschina.UI.DetailActivity;
 import com.ilmare.oschina.UI.ImagePreviewActivity;
 import com.ilmare.oschina.UI.LoginActivity;
+import com.ilmare.oschina.UI.SimpleBackActivity;
+import com.ilmare.oschina.UI.SimpleBackPage;
+import com.ilmare.oschina.UI.TweetActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -134,9 +137,6 @@ public class UIHelper {
     }
 
 
-
-
-
     public static void initWebView(WebView webView) {
         WebSettings settings = webView.getSettings();
         settings.setDefaultFontSize(15);              //默认字体大小
@@ -233,7 +233,7 @@ public class UIHelper {
 
     public static String setHtmlCotentSupportImagePreview(String body) {
         // 读取用户设置：是否加载文章图片--默认有wifi下始终加载图片
-        if (AppContext.get(AppConfig.KEY_LOAD_IMAGE, true)|| TDevice.isWifiOpen()) {
+        if (AppContext.get(AppConfig.KEY_LOAD_IMAGE, true) || TDevice.isWifiOpen()) {
             // 过滤掉 img标签的width,height属性
             body = body.replaceAll("(<img[^>]*?)\\s+width\\s*=\\s*\\S+", "$1");
             body = body.replaceAll("(<img[^>]*?)\\s+height\\s*=\\s*\\S+", "$1");
@@ -249,11 +249,10 @@ public class UIHelper {
     }
 
 
-
     /**
      * 添加网页的点击图片展示支持
      */
-    @SuppressLint({ "JavascriptInterface", "SetJavaScriptEnabled" })
+    @SuppressLint({"JavascriptInterface", "SetJavaScriptEnabled"})
     @JavascriptInterface
     public static void addWebImageShow(final Context cxt, WebView wv) {
         wv.getSettings().setJavaScriptEnabled(true);
@@ -262,7 +261,7 @@ public class UIHelper {
             @JavascriptInterface
             public void showImagePreview(String bigImageUrl) {
                 if (bigImageUrl != null && !StringUtils.isEmpty(bigImageUrl)) {
-                    UIHelper.showImagePreview(cxt, new String[] { bigImageUrl });
+                    UIHelper.showImagePreview(cxt, new String[]{bigImageUrl});
                 }
             }
         }, "mWebViewImageListener");
@@ -365,4 +364,32 @@ public class UIHelper {
         Intent intent = new Intent(context, LoginActivity.class);
         context.startActivity(intent);
     }
+
+    public static void showTweetActivity(Context context, SimpleBackPage page,
+                                         Bundle args) {
+
+        Intent intent = new Intent(context, TweetActivity.class);
+        intent.putExtra(TweetActivity.FROM_KEY, 1);
+        intent.putExtra(SimpleBackActivity.BUNDLE_KEY_ARGS, args);
+        intent.putExtra(SimpleBackActivity.BUNDLE_KEY_PAGE, page.getValue());
+        context.startActivity(intent);
+
+    }
+
+    /**
+     * 显示我的所有动态
+     *
+     * @param context
+     */
+    public static void showMyActive(Context context) {
+        showSimpleBack(context, SimpleBackPage.MY_ACTIVE);
+    }
+
+    public static void showSimpleBack(Context context, SimpleBackPage page) {
+        Intent intent = new Intent(context, SimpleBackActivity.class);
+        intent.putExtra(SimpleBackActivity.BUNDLE_KEY_PAGE, page.getValue());
+        context.startActivity(intent);
+    }
+
+
 }
