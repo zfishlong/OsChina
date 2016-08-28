@@ -51,9 +51,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         initData();
     }
 
-    protected abstract void initData();
+    protected  void initData(){
 
-    protected abstract void initView();
+    }
+
+    protected  void initView(){
+
+    }
 
     protected abstract void init(Bundle savedInstanceState);
 

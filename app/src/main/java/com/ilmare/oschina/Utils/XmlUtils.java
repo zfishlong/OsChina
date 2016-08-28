@@ -1,9 +1,5 @@
 package com.ilmare.oschina.Utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.basic.DoubleConverter;
 import com.thoughtworks.xstream.converters.basic.FloatConverter;
@@ -11,12 +7,14 @@ import com.thoughtworks.xstream.converters.basic.IntConverter;
 import com.thoughtworks.xstream.converters.basic.LongConverter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * xml解析工具类
- * 
  * @author FireAnt（http://my.oschina.net/LittleDY）
  * @version 创建时间：2014年9月27日 下午2:04:19
- * 
  */
 
 public class XmlUtils {
@@ -25,10 +23,10 @@ public class XmlUtils {
 
     /**
      * 将一个xml流转换为bean实体类
-     * 
-     * @param type
-     * @param instance
-     * @return
+     *
+     * @param type 要转换的类型
+     * @param is   要转换的流
+     * @return 转换完成对象
      */
     @SuppressWarnings("unchecked")
     public static <T> T toBean(Class<T> type, InputStream is) {
@@ -56,14 +54,13 @@ public class XmlUtils {
         }
         return obj;
     }
-    
+
     public static <T> T toBean(Class<T> type, byte[] bytes) {
-	if (bytes == null) return null;
-	return toBean(type, new ByteArrayInputStream(bytes));
+        if (bytes == null) return null;
+        return toBean(type, new ByteArrayInputStream(bytes));
     }
 
     private static class MyIntCoverter extends IntConverter {
-
         @Override
         public Object fromString(String str) {
             int value;
@@ -80,6 +77,7 @@ public class XmlUtils {
             return super.toString(obj);
         }
     }
+
 
     private static class MyLongCoverter extends LongConverter {
         @Override
@@ -99,6 +97,7 @@ public class XmlUtils {
         }
     }
 
+
     private static class MyFloatCoverter extends FloatConverter {
         @Override
         public Object fromString(String str) {
@@ -117,6 +116,7 @@ public class XmlUtils {
         }
     }
 
+
     private static class MyDoubleCoverter extends DoubleConverter {
         @Override
         public Object fromString(String str) {
@@ -134,4 +134,6 @@ public class XmlUtils {
             return super.toString(obj);
         }
     }
+
+
 }

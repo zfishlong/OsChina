@@ -24,7 +24,7 @@ public class ActiveFragment extends BaseListViewFragment {
 
     protected static final String TAG = ActiveFragment.class.getSimpleName();
     private static final String CACHE_KEY_PREFIX = "active_list";
-    private boolean mIsWatingLogin=false; // 还没登陆
+    private boolean mIsWatingLogin=false;       // 还没登陆
 
     @Override
     protected void loadMoreFromServer() {
@@ -33,7 +33,7 @@ public class ActiveFragment extends BaseListViewFragment {
 
     @Override
     protected String getCacheKeyPrefix() {
-        return new StringBuffer(CACHE_KEY_PREFIX + mCatalog).append(
+        return new StringBuffer(CACHE_KEY_PREFIX +mCatalog).append(
                 AppContext.getInstance().getLoginUid()).toString();
     }
 

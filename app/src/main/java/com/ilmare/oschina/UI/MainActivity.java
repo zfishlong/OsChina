@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -26,10 +25,13 @@ import com.ilmare.oschina.Utils.ToastUtil;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class MainActivity extends AppCompatActivity  implements View.OnTouchListener, DrawerLayout.DrawerListener, DrawerFragment.OnDrawerItemSelectedListener, View.OnClickListener {
+/**
+ *  主界面
+ */
+public class MainActivity extends AppCompatActivity
+        implements DrawerLayout.DrawerListener,
+        DrawerFragment.OnDrawerItemSelectedListener, View.OnClickListener, View.OnTouchListener {
 
-    @InjectView(R.id.realtabcontent)
-    FrameLayout realtabcontent;
 
     @InjectView(android.R.id.tabhost)
     FragmentTabHost tabhost;
@@ -39,7 +41,11 @@ public class MainActivity extends AppCompatActivity  implements View.OnTouchList
     DrawerLayout drawerLayout;
 
 
+
+    //侧滑的Fragment
     DrawerFragment navigationDrawer;
+
+    //左上角的开关
     ActionBarDrawerToggle drawerToggle;
 
 
@@ -49,14 +55,20 @@ public class MainActivity extends AppCompatActivity  implements View.OnTouchList
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
-        //布局文件中的fragment要用findFragmentById 替代
-        navigationDrawer= (DrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         initView();
     }
 
+    /**
+     * 初始化View
+     */
     private void initView() {
+        //布局文件中的fragment要用findFragmentById 替代
+        navigationDrawer= (DrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+
         // 初始化底部FragmentTabHost  使tabhost与fragement关联
         tabhost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
+
+
         //去掉分割线
         if (Build.VERSION.SDK_INT > 10) {
             tabhost.getTabWidget().setShowDividers(0);
@@ -64,8 +76,10 @@ public class MainActivity extends AppCompatActivity  implements View.OnTouchList
 
         initTabs();
 
-
+        //初始化actionbar
         restoreActionBar();
+
+        //设置点击事件
         quickOptionIv.setOnClickListener(this);
     }
 
@@ -96,38 +110,40 @@ public class MainActivity extends AppCompatActivity  implements View.OnTouchList
             title.setText(getString(mainTab.getResName()));
             tab.setIndicator(indicator);
 
-//            方法二：
-//            tab.setContent(new TabContentFactory() {
-//            	@Override
-//            	public View createTabContent(String tag) {
-//            		return new View(MainActivity.this);
-//            	}
-//            });
 
             Bundle bundle = new Bundle();
             bundle.putString("key", "content: " + getString(mainTab.getResName()));
 
             // 2. 把新的选项卡添加到TabHost中
+            // 1.tab标签 2.要打开的
             tabhost.addTab(tab, mainTab.getClz(), bundle);
-            tabhost.getTabWidget().getChildAt(i).setOnTouchListener(this);
+
+            //设置触摸事件
+            //tabhost.getTabWidget().getChildAt(i).setOnTouchListener(this);
+
         }
 
     }
 
+
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        // 设置显示为标准模式, 还有NAVIGATION_MODE_LIST列表模式, NAVIGATION_MODE_TABS选项卡模式. 参见ApiDemos
+
+        // 设置显示为标准模式, 还有NAVIGATION_MODE_LIST列表模式
+        // NAVIGATION_MODE_TABS选项卡模式.
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         // 设置显示标题
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);//设置显示左侧按钮
-        actionBar.setHomeButtonEnabled(true);//设置左侧按钮可点
-        // 设置标题
-        actionBar.setTitle(getTitle());
+        actionBar.setDisplayShowTitleEnabled(true);  //可以显示标题
+        actionBar.setDisplayHomeAsUpEnabled(true);   //设置显示左侧按钮
+        actionBar.setHomeButtonEnabled(true);        //设置左侧按钮可点
+        actionBar.setTitle(getTitle());              // 设置标题
 
-
+        //这里是我们自定义的回调
         navigationDrawer.setOnDrawerItemSelectedListener(this);
+
+        //添加抽屉的监听
         drawerLayout.addDrawerListener(this);
+
         //初始化开关，并和drawer关联
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerToggle.syncState();//该方法会自动和actionBar关联
@@ -164,11 +180,6 @@ public class MainActivity extends AppCompatActivity  implements View.OnTouchList
 
 
 
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        return false;
-    }
-
     /**
      * Drawer的回调方法，需要在该方法中对Toggle做对应的操作
      */
@@ -184,6 +195,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnTouchList
         invalidateOptionsMenu();
     }
 
+
     @Override
     public void onDrawerSlide(View drawerView, float slideOffset) {// drawer滑动的回调
         drawerToggle.onDrawerSlide(drawerView, slideOffset);
@@ -197,7 +209,10 @@ public class MainActivity extends AppCompatActivity  implements View.OnTouchList
 
     @Override
     public void onDrawerItemSelected(int position) {
+
+        //关闭侧滑
         drawerLayout.closeDrawer(GravityCompat.START);
+
 
         switch (position) {
             case R.id.menu_item_quests: //技术问答
@@ -223,19 +238,28 @@ public class MainActivity extends AppCompatActivity  implements View.OnTouchList
         }
     }
 
+
+
     //快捷菜单点击事件
     @Override
     public void onClick(View v) {
         showQuickOption();
     }
 
+
     // 显示快速操作界面
     private void showQuickOption() {
-        final QuickOptionDialog dialog = new QuickOptionDialog(
-                MainActivity.this);
+        final QuickOptionDialog dialog = new QuickOptionDialog(MainActivity.this);
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
     }
+
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return false;
+    }
+
 
 }

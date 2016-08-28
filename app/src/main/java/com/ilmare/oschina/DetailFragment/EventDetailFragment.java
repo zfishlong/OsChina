@@ -1,6 +1,7 @@
 package com.ilmare.oschina.DetailFragment;
 
 import com.ilmare.oschina.Base.BaseFragment;
+import com.ilmare.oschina.R;
 
 /**
  * ===============================
@@ -25,7 +26,7 @@ public class EventDetailFragment extends BaseFragment {
 
     @Override
     protected int getLayoutId() {
-        return 0;
+        return R.layout.fragment_explore;
     }
 
     @Override

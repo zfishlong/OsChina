@@ -16,8 +16,6 @@
 
 package com.ilmare.oschina.Widget;
 
-import java.util.Locale;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -43,6 +41,8 @@ import android.widget.TextView;
 
 import com.ilmare.oschina.R;
 
+import java.util.Locale;
+
 
 public class PagerSlidingTab extends HorizontalScrollView {
 
@@ -55,8 +55,8 @@ public class PagerSlidingTab extends HorizontalScrollView {
 		android.R.attr.textSize,
 		android.R.attr.textColor
     };
-	// @formatter:on
 
+	// @formatter:on
 	private LinearLayout.LayoutParams defaultTabLayoutParams;
 	private LinearLayout.LayoutParams expandedTabLayoutParams;
 

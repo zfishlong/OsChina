@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 
 import com.ilmare.oschina.Cache.CacheManager;
 import com.ilmare.oschina.R;
@@ -29,22 +28,30 @@ import butterknife.InjectView;
  * 创建时间：6/16/2016 12:33 PM
  * 版本号： 1.0
  * 版权所有(C) 6/16/2016
- * 描述：
+ * 描述：综合和动弹中的7个界面 --->只用adapter不同
  * ===============================
  */
-public abstract class BaseListViewFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public abstract class BaseListViewFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, AbsListView.OnScrollListener {
 
-    public static final String BUNDLE_KEY_CATALOG ="bundle_key_catalog" ;
+    //ListView 和 SwipeRefreshLayout
     @InjectView(R.id.listview)
     protected ListView listview;
     @InjectView(R.id.swiperefreshlayout)
     protected SwipeRefreshLayout swiperefreshlayout;
 
+    //当前页
+    public int mCurrentPage=0;
+
+    //当前分类
+    public int mCatalog=1;
+
+    public static final String BUNDLE_KEY_CATALOG ="bundle_key_catalog" ;
+
+    //缓存任务
     private AsyncTask<String, Void, Serializable> mCacheTask;
 
-    public int mCurrentPage=0;
-    public int mCatalog = 1;
 
+    //创建一个View
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,34 +64,15 @@ public abstract class BaseListViewFragment extends Fragment implements SwipeRefr
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ProgressBar ProgressBar = new ProgressBar(getActivity());
-        listview.addFooterView(ProgressBar);
-
-        //ListView设置 滚动监听
-        listview.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-                if (scrollState == SCROLL_STATE_IDLE && listview.getAdapter().getCount() == listview.getLastVisiblePosition() + 1) {
-                    //滑到最后了  加载更多
-                    loadMoreFromServer();
-                }
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-            }
-        });
-
-        //请求数据
+        //请求数据 参数isNeedCache-->是否需要缓存
         requestData(true);
 
         //设置刷新监听
         swiperefreshlayout.setOnRefreshListener(this);
-    }
 
-    protected abstract void loadMoreFromServer();
+        //ListView设置 滚动监听
+        listview.setOnScrollListener(this);
+    }
 
 
 
@@ -92,9 +80,6 @@ public abstract class BaseListViewFragment extends Fragment implements SwipeRefr
         return new StringBuilder(getCacheKeyPrefix()).append("_")
                 .append(mCurrentPage).toString();
     }
-
-    //获取缓存的Key
-    protected abstract String getCacheKeyPrefix();
 
 
     //是否需要缓存
@@ -105,6 +90,9 @@ public abstract class BaseListViewFragment extends Fragment implements SwipeRefr
         }
         loadFromServer();
     }
+
+
+
 
     //读取缓存数据
     private void readCacheData(String cacheKey) {
@@ -119,6 +107,20 @@ public abstract class BaseListViewFragment extends Fragment implements SwipeRefr
             mCacheTask.cancel(true);
             mCacheTask = null;
         }
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        if (scrollState == SCROLL_STATE_IDLE &&
+                listview.getAdapter().getCount() == listview.getLastVisiblePosition() + 1) {
+            //滑到最后了  加载更多
+            loadMoreFromServer();
+        }
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
     }
 
 
@@ -147,16 +149,17 @@ public abstract class BaseListViewFragment extends Fragment implements SwipeRefr
 
             if (seri != null) {
                 executeOnReadCacheSuccess(seri);
-            } else {
-//                executeOnLoadDataError(null);
             }
-            executeOnLoadFinish();
+//            else {
+//                executeOnLoadDataError(null);
+//            }
+//            executeOnLoadFinish();
         }
     }
 
 
 
-
+    //异步缓存任务缓存任务
     private class SaveCacheTask extends AsyncTask<Void, Void, Void> {
         private final WeakReference<Context> mContext;
         private final Serializable seri;
@@ -175,12 +178,7 @@ public abstract class BaseListViewFragment extends Fragment implements SwipeRefr
         }
     }
 
-    protected abstract void executeOnReadCacheSuccess(Serializable seri);
-
-    protected  void executeOnLoadFinish(){
-
-    };
-
+    //处理的事件
     protected AsyncHttpResponseHandler mHandler = new AsyncHttpResponseHandler() {
         @Override
         public void onSuccess(String content) {
@@ -197,21 +195,33 @@ public abstract class BaseListViewFragment extends Fragment implements SwipeRefr
         }
     };
 
-
+    //缓存到本地
     public void saveLocal(Serializable data){
         new SaveCacheTask(getActivity(), data, getCacheKey()).execute();
     }
 
-    protected abstract void loadFromServer();
-
-    protected abstract void onLoadSuccess(String content);
-
-
+    //下拉刷新时的事件
     @Override
     public void onRefresh() {
         mCurrentPage=0;
         loadFromServer();
     }
+
+
+    //从服务器加载数据 -->有子类实现
+    protected abstract void loadFromServer();
+
+    //加载成功时-->由子类实现
+    protected abstract void onLoadSuccess(String content);
+
+    //读取缓存成功时-->由子类实现
+    protected abstract void executeOnReadCacheSuccess(Serializable seri);
+
+    //获取缓存的Key -->由子类实现
+    protected abstract String getCacheKeyPrefix();
+
+    //加载更多-->由子类实现
+    protected abstract void loadMoreFromServer();
 
 
 }

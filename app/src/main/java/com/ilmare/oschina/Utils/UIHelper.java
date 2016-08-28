@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -35,6 +36,8 @@ import com.ilmare.oschina.UI.TweetActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URLDecoder;
+
 
 public class UIHelper {
 
@@ -49,29 +52,243 @@ public class UIHelper {
             + "<link rel=\"stylesheet\" type=\"text/css\" href=\"file:///android_asset/shCore.css\">"
             + "<script type=\"text/javascript\">SyntaxHighlighter.all();</script>"
             + "<script type=\"text/javascript\">function showImagePreview(var url){window.location.url= url;}</script>";
+
+    //web的样式
     public final static String WEB_STYLE = linkCss
             + "<style>* {font-size:16px;line-height:20px;} p {color:#333;} a {color:#3E62A6;} img {max-width:310px;} "
             + "img.alignleft {float:left;max-width:120px;margin:0 10px 5px 0;border:1px solid #ccc;background:#fff;padding:2px;} "
             + "pre {font-size:9pt;line-height:12pt;font-family:Courier New,Arial;border:1px solid #ddd;border-left:5px solid #6CE26C;background:#f6f6f6;padding:5px;overflow: auto;} "
             + "a.tag {font-size:15px;text-decoration:none;background-color:#cfc;color:#060;border-bottom:1px solid #B1D3EB;border-right:1px solid #B1D3EB;color:#3E6D8E;margin:2px 2px 2px 0;padding:2px 4px;white-space:nowrap;position:relative}</style>";
 
+    //加载图片
     public static final String WEB_LOAD_IMAGES = "<script type=\"text/javascript\"> var allImgUrls = getAllImgSrc(document.body.innerHTML);</script>";
 
+    //显示图片
     private static final String SHOWIMAGE = "ima-api:action=showImage&data=";
+
+    /**
+     * 初始化webView
+     *
+     * @param webView
+     */
+    public static void initWebView(WebView webView) {
+        WebSettings settings = webView.getSettings();
+        settings.setDefaultFontSize(15);              //默认字体大小
+        settings.setJavaScriptEnabled(true);          //javascript可用
+        settings.setSupportZoom(true);
+        settings.setBuiltInZoomControls(true);           //缩放可用
+
+        int sysVersion = Build.VERSION.SDK_INT;       //去掉缩放按钮
+        if (sysVersion >= 11) {
+            settings.setDisplayZoomControls(false);
+        } else {
+            ZoomButtonsController zbc = new ZoomButtonsController(webView);
+            zbc.getZoomControls().setVisibility(View.GONE);
+        }
+        webView.setWebViewClient(UIHelper.getWebViewClient());  //设置默认浏览器
+    }
 
 
     /**
-     * 显示新闻详情
+     * 获取webviewClient对象
+     *
+     * @return WebViewClient
      */
-    public static void showNewsDetail(Context context, int newsId,
-                                      int commentCount) {
+    public static WebViewClient getWebViewClient() {
+        return new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                showUrlRedirect(view.getContext(), url);
+                return true;
+            }
+        };
+    }
+
+
+    /**
+     * @param context 上下文
+     * @param url     要转去的url
+     */
+    private static void showUrlRedirect(Context context, String url) {
+
+        if (url == null) return;
+
+        //显示活动详细信息
+        if (url.contains("city.oschina.net/")) {
+            int id = StringUtils.toInt(url.substring(url.lastIndexOf('/') + 1));
+
+            UIHelper.showEventDetail(context, id);
+            return;
+        }
+
+        //显示图片
+        if (url.startsWith(SHOWIMAGE)) {
+            String realUrl = url.substring(SHOWIMAGE.length());
+            try {
+                JSONObject json = new JSONObject(realUrl);
+                int idx = json.optInt("index");
+                String[] urls = json.getString("urls").split(",");
+                showImagePreview(context, idx, urls);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+
+        //自己网站站中的链接-->转去自己的网站
+        URLsUtils urls = URLsUtils.parseURL(url);
+        if (urls != null) {
+            showLinkRedirect(context, urls.getObjType(), urls.getObjId(), urls.getObjKey());
+        } else {  //打开浏览器--->处理
+            openBrowser(context, url);
+        }
+    }
+
+    //显示活动详情
+    private static void showEventDetail(Context context, int eventId) {
+        Intent intent = new Intent(context, DetailActivity.class);
+        intent.putExtra("post_id", eventId);
+        intent.putExtra(DetailActivity.BUNDLE_KEY_DISPLAY_TYPE, DetailActivity.DISPLAY_EVENT);
+        context.startActivity(intent);
+    }
+
+
+    public static void showLinkRedirect(Context context, int objType,
+                                        int objId, String objKey) {
+        switch (objType) {
+            case URLsUtils.URL_OBJ_TYPE_NEWS:
+                showNewsDetail(context, objId, -1);
+                break;
+            case URLsUtils.URL_OBJ_TYPE_QUESTION:
+
+                // TODO 提问
+                // showPostDetail(context, objId, 0);
+                break;
+
+            case URLsUtils.URL_OBJ_TYPE_QUESTION_TAG:
+                //showPostListByTag(context, objKey);
+                break;
+            case URLsUtils.URL_OBJ_TYPE_SOFTWARE:
+                //showSoftwareDetail(context, objKey);
+                break;
+            case URLsUtils.URL_OBJ_TYPE_ZONE:
+                //showUserCenter(context, objId, objKey);
+                break;
+            case URLsUtils.URL_OBJ_TYPE_TWEET:
+                showTweetDetail(context, null, objId);
+                break;
+            case URLsUtils.URL_OBJ_TYPE_BLOG:
+                showBlogDetail(context, objId, 0);
+                break;
+            case URLsUtils.URL_OBJ_TYPE_OTHER:
+                openBrowser(context, objKey);
+                break;
+            case URLsUtils.URL_OBJ_TYPE_TEAM:
+                openSysBrowser(context, objKey);
+                break;
+            case URLsUtils.URL_OBJ_TYPE_GIT:
+                openSysBrowser(context, objKey);
+                break;
+        }
+    }
+
+
+    /**
+     * 打开内置浏览器
+     *
+     * @param context
+     * @param url
+     */
+    public static void openBrowser(Context context, String url) {
+
+        if (StringUtils.isImgUrl(url)) {
+            ImagePreviewActivity.showImagePrivew(context, 0,
+                    new String[]{url});
+            return;
+        }
+
+        if (url.startsWith("http://www.oschina.net/tweet-topic/")) {
+            Bundle bundle = new Bundle();
+            int i = url.lastIndexOf("/");
+            if (i != -1) {
+                bundle.putString("topic",
+                        URLDecoder.decode(url.substring(i + 1)));
+            }
+
+            // UIHelper.showSimpleBack(context, SimpleBackPage.TWEET_TOPIC_LIST, bundle);
+
+            return;
+        }
+        try {
+            //启用外部浏览器
+            Uri uri = Uri.parse(url);
+            Intent it = new Intent(Intent.ACTION_VIEW, uri);
+            context.startActivity(it);
+
+            //  Bundle bundle = new Bundle();
+            // bundle.putString(BrowserFragment.BROWSER_KEY, url);
+            //showSimpleBack(context, SimpleBackPage.BROWSER, bundle);
+        } catch (Exception e) {
+            e.printStackTrace();
+            AppContext.showToastShort("无法浏览此网页");
+        }
+    }
+
+
+    /**
+     * 打开系统中的浏览器
+     *
+     * @param context
+     * @param url
+     */
+    public static void openSysBrowser(Context context, String url) {
+        try {
+            Uri uri = Uri.parse(url);
+            Intent it = new Intent(Intent.ACTION_VIEW, uri);
+            context.startActivity(it);
+        } catch (Exception e) {
+            e.printStackTrace();
+            AppContext.showToastShort("无法浏览此网页");
+        }
+    }
+
+
+    /**
+     * 设置支持图片预览
+     *
+     * @param body webView要显示的内容
+     * @return 替换后的String
+     */
+    public static String setHtmlCotentSupportImagePreview(String body) {
+        // 读取用户设置：是否加载文章图片--默认有wifi下始终加载图片
+        if (AppContext.get(AppConfig.KEY_LOAD_IMAGE, true) || TDevice.isWifiOpen()) {
+            // 过滤掉 img标签的width,height属性
+            body = body.replaceAll("(<img[^>]*?)\\s+width\\s*=\\s*\\S+", "$1");
+            body = body.replaceAll("(<img[^>]*?)\\s+height\\s*=\\s*\\S+", "$1");
+            // 添加点击图片放大支持 给img 标签添加javaScript事件
+            body = body.replaceAll("(<img[^>]+src=\")(\\S+)\"", "$1$2\" onClick=\"showImagePreview('$2')\"");
+        } else {
+            // 过滤掉 img标签
+            body = body.replaceAll("<\\s*img\\s+([^>]*)\\s*>", "");
+        }
+        return body;
+    }
+
+
+    /**
+     * 显示新闻详细信息
+     *
+     * @param context      上下文
+     * @param newsId       新闻标题
+     * @param commentCount 评论数量
+     */
+    public static void showNewsDetail(Context context, int newsId, int commentCount) {
 
         Intent intent = new Intent(context, DetailActivity.class);
         intent.putExtra("news_id", newsId);
         intent.putExtra("comment_count", commentCount);
 
-        intent.putExtra(DetailActivity.BUNDLE_KEY_DISPLAY_TYPE,
-                DetailActivity.DISPLAY_NEWS);
+        intent.putExtra(DetailActivity.BUNDLE_KEY_DISPLAY_TYPE, DetailActivity.DISPLAY_NEWS);
 
         context.startActivity(intent);
     }
@@ -96,15 +313,19 @@ public class UIHelper {
     }
 
 
-    //
+    /**
+     * 显示新闻的信息
+     *
+     * @param context 上下文
+     * @param news    新闻信息
+     */
     public static void showNewsRedirect(Context context, News news) {
         String url = news.getUrl();
         // 如果是活动则直接跳转活动详情页面
         String eventUrl = news.getNewType().getEventUrl();
-
         if (!StringUtils.isEmpty(eventUrl)) {
-            showEventDetail(context,
-                    StringUtils.toInt(news.getNewType().getAttachment()));
+            showEventDetail(context,StringUtils.toInt(news.getNewType().getAttachment()));
+
             return;
         }
 
@@ -117,17 +338,15 @@ public class UIHelper {
                 case News.NEWSTYPE_NEWS:
                     showNewsDetail(context, newsId, news.getCommentCount());
                     break;
-//            case News.NEWSTYPE_SOFTWARE:
+                case News.NEWSTYPE_SOFTWARE:
 //                showSoftwareDetail(context, objId);
-//                break;
-//            case News.NEWSTYPE_POST:
-//                showPostDetail(context, StringUtils.toInt(objId),
-//                        news.getCommentCount());
-//                break;
-//            case News.NEWSTYPE_BLOG:
-//                showBlogDetail(context, StringUtils.toInt(objId),
-//                        news.getCommentCount());
-//                break;
+                    break;
+                case News.NEWSTYPE_POST:
+//                showPostDetail(context, StringUtils.toInt(objId),news.getCommentCount());
+                    break;
+                case News.NEWSTYPE_BLOG:
+                    showBlogDetail(context, StringUtils.toInt(objId), news.getCommentCount());
+                    break;
                 default:
                     break;
             }
@@ -137,115 +356,15 @@ public class UIHelper {
     }
 
 
-    public static void initWebView(WebView webView) {
-        WebSettings settings = webView.getSettings();
-        settings.setDefaultFontSize(15);              //默认字体大小
-        settings.setJavaScriptEnabled(true);          //javascript可用
-        settings.setSupportZoom(true);                //缩放可用
-        settings.setBuiltInZoomControls(true);
-        int sysVersion = Build.VERSION.SDK_INT;       //去掉缩放按钮
-        if (sysVersion >= 11) {
-            settings.setDisplayZoomControls(false);
-        } else {
-            ZoomButtonsController zbc = new ZoomButtonsController(webView);
-            zbc.getZoomControls().setVisibility(View.GONE);
-        }
-        webView.setWebViewClient(UIHelper.getWebViewClient());  //设置默认浏览器
-    }
-
-    /**
-     * 获取webviewClient对象
-     *
-     * @return
-     */
-    public static WebViewClient getWebViewClient() {
-        return new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                showUrlRedirect(view.getContext(), url);
-                return true;
-            }
-        };
-    }
-
-
-    //
-    private static void showUrlRedirect(Context context, String url) {
-        if (url == null)
-            return;
-        //显示活动详细信息
-        if (url.contains("city.oschina.net/")) {
-            int id = StringUtils.toInt(url.substring(url.lastIndexOf('/') + 1));
-            UIHelper.showEventDetail(context, id);
-            return;
-        }
-        //显示图片
-        if (url.startsWith(SHOWIMAGE)) {
-            String realUrl = url.substring(SHOWIMAGE.length());
-            try {
-                JSONObject json = new JSONObject(realUrl);
-                int idx = json.optInt("index");
-                String[] urls = json.getString("urls").split(",");
-                showImagePreview(context, idx, urls);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return;
-        }
-        //
-        URLsUtils urls = URLsUtils.parseURL(url);
-        if (urls != null) {
-            showLinkRedirect(context, urls.getObjType(), urls.getObjId(),
-                    urls.getObjKey());
-        } else {
-            openBrowser(context, url);
-        }
-    }
-
-    public static void openBrowser(Context context, String url) {
-
-    }
-
-    @JavascriptInterface
+    //显示图片预览
     public static void showImagePreview(Context context, String[] imageUrls) {
         ImagePreviewActivity.showImagePrivew(context, 0, imageUrls);
     }
 
 
-    //
+    //显示
     public static void showImagePreview(Context context, int index, String[] imageUrls) {
         ImagePreviewActivity.showImagePrivew(context, index, imageUrls);
-    }
-
-    public static void showLinkRedirect(Context context, int objType, int objId, String objKey) {
-        //TODO 转去链接
-        System.out.println("转去链接");
-    }
-
-    private static void showEventDetail(Context context, int eventId) {
-        Intent intent = new Intent(context, DetailActivity.class);
-        intent.putExtra("post_id", eventId);
-        intent.putExtra(DetailActivity.BUNDLE_KEY_DISPLAY_TYPE,
-                DetailActivity.DISPLAY_EVENT);
-        context.startActivity(intent);
-    }
-
-
-    public static String setHtmlCotentSupportImagePreview(String body) {
-        // 读取用户设置：是否加载文章图片--默认有wifi下始终加载图片
-        if (AppContext.get(AppConfig.KEY_LOAD_IMAGE, true) || TDevice.isWifiOpen()) {
-            // 过滤掉 img标签的width,height属性
-            body = body.replaceAll("(<img[^>]*?)\\s+width\\s*=\\s*\\S+", "$1");
-            body = body.replaceAll("(<img[^>]*?)\\s+height\\s*=\\s*\\S+", "$1");
-            // 添加点击图片放大支持
-            // 添加点击图片放大支持
-            body = body.replaceAll("(<img[^>]+src=\")(\\S+)\"",
-                    "$1$2\" onClick=\"showImagePreview('$2')\"");
-        } else {
-            // 过滤掉 img标签
-            body = body.replaceAll("<\\s*img\\s+([^>]*)\\s*>", "");
-        }
-        return body;
     }
 
 
@@ -266,6 +385,7 @@ public class UIHelper {
             }
         }, "mWebViewImageListener");
     }
+
 
     public static SpannableString parseActiveAction(int objecttype,
                                                     int objectcatalog, String objecttitle) {
@@ -348,15 +468,15 @@ public class UIHelper {
     /**
      * 显示博客详情
      *
-     * @param context
-     * @param blogId
+     * @param context 上下文
+     * @param blogId  博客id
+     * @param count   博客评论数量
      */
     public static void showBlogDetail(Context context, int blogId, int count) {
         Intent intent = new Intent(context, DetailActivity.class);
         intent.putExtra("blog_id", blogId);
         intent.putExtra("comment_count", count);
-        intent.putExtra(DetailActivity.BUNDLE_KEY_DISPLAY_TYPE,
-                DetailActivity.DISPLAY_BLOG);
+        intent.putExtra(DetailActivity.BUNDLE_KEY_DISPLAY_TYPE, DetailActivity.DISPLAY_BLOG);
         context.startActivity(intent);
     }
 

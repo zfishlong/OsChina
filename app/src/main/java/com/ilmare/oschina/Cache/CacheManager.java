@@ -18,14 +18,16 @@ public class CacheManager {
 
     // wifi缓存时间为5分钟
     private static long wifi_cache_time = 5 * 60 * 1000;
+
     // 其他网络环境为1小时
     private static long other_cache_time = 60 * 60 * 1000;
 
+
+
     /**
-     * 保存对象
-     *
-     * @param ser
-     * @param file
+     * 保存对象--->直接保存就可以
+     * @param ser 要序列化的对象
+     * @param file 前缀作为文件名
      * @throws IOException
      */
     public static boolean saveObject(Context context, Serializable ser,
@@ -44,9 +46,6 @@ public class CacheManager {
         } finally {
             try {
                 oos.close();
-            } catch (Exception e) {
-            }
-            try {
                 fos.close();
             } catch (Exception e) {
             }
@@ -54,10 +53,9 @@ public class CacheManager {
     }
 
     /**
-     * 读取对象
-     *
-     * @param file
-     * @return
+     * 读取对象  1.判断文件是否存在 2.判断缓存文件是否过期
+     * @param file  前缀做了文件名啊
+     * @return 读出来的序列化对象 -->上层用到的时候要强转
      * @throws IOException
      */
     public static Serializable readObject(Context context, String file) {
@@ -70,6 +68,7 @@ public class CacheManager {
             ois = new ObjectInputStream(fis);
             return (Serializable) ois.readObject();
         } catch (FileNotFoundException e) {
+
         } catch (Exception e) {
             e.printStackTrace();
             // 反序列化失败 - 删除缓存文件
@@ -80,21 +79,18 @@ public class CacheManager {
         } finally {
             try {
                 ois.close();
-            } catch (Exception e) {
-            }
-            try {
                 fis.close();
             } catch (Exception e) {
             }
+
         }
         return null;
     }
 
     /**
      * 判断缓存是否存在
-     *
-     * @param cachefile
-     * @return
+     * @param cachefile 缓存文件名称
+     * @return 文件是否存在
      */
     public static boolean isExistDataCache(Context context, String cachefile) {
         if (context == null)
@@ -112,7 +108,6 @@ public class CacheManager {
     public static boolean isCacheDataFailure(Context context, String cachefile) {
         File data = context.getFileStreamPath(cachefile);
         if (!data.exists()) {
-
             return false;
         }
         long existTime = System.currentTimeMillis() - data.lastModified();

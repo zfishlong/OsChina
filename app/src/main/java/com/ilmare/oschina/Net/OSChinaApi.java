@@ -50,20 +50,7 @@ public class OSChinaApi {
         } else if (catalog == NewsList.CATALOG_MONTH) {
             params.put("show", "month");
         }
-
         ApiHttpClient.get("action/api/news_list", params, handler);
-
-//        TLog.log("getNewsList: catalog: " + catalog + " page: " + page);
-//        String path = "";
-//        switch (catalog) {
-//		case 1:
-//			path = "oschina/list/news/page"+page+".xml";
-//			break;
-//		case 4:
-//			path = "oschina/list/hotspot/page"+page+".xml";
-//			break;
-//		}
-//        ApiHttpClient.getLocal(path, params, handler);
     }
 
     public static void getBlogList(String type, int pageIndex,
@@ -73,15 +60,6 @@ public class OSChinaApi {
         params.put("pageIndex", pageIndex+"");
         params.put("pageSize", AppContext.PAGE_SIZE+"");
         ApiHttpClient.get("action/api/blog_list", params, handler);
-
-//        String path = "";
-//        if (BlogList.CATALOG_LATEST.equals(type)) {
-//            path = "oschina/list/blog/page" + pageIndex + ".xml";
-//        } else if (BlogList.CATALOG_RECOMMEND.equals(type)) {
-//            path = "oschina/list/recommend/page" + pageIndex + ".xml";
-//        }
-//
-//        ApiHttpClient.getLocal(path, params, handler);
     }
 
     public static void getPostList(int catalog, int page,

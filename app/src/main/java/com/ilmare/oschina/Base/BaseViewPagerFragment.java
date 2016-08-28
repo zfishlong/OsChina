@@ -21,14 +21,14 @@ import butterknife.InjectView;
  * 创建时间：6/15/2016 11:28 PM
  * 版本号： 1.0
  * 版权所有(C) 6/15/2016
- * 描述：
+ * 描述：综合和动弹的Fragment抽取
  * ===============================
  */
-
 public abstract class BaseViewPagerFragment extends Fragment {
 
     @InjectView(R.id.pager_tabstrip)
     PagerSlidingTab pagerTabstrip;
+
     @InjectView(R.id.pager)
     ViewPager pager;
 
@@ -48,14 +48,16 @@ public abstract class BaseViewPagerFragment extends Fragment {
         adapter = new BaseViewPagerAdapter(getActivity(),getChildFragmentManager());
         //子类填充数据
         setPagerData(adapter);
-
         //设置适配器
         pager.setAdapter(adapter);
+        //绑定ViewPager
         pagerTabstrip.setViewPager(pager);
+        //全部缓存下来
         setOffscreenPageLimit();
 
     }
 
+    //设置缓存数量
     private void setOffscreenPageLimit() {
         pager.setOffscreenPageLimit(adapter.getCount()-1);
     }

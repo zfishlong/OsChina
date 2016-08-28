@@ -18,11 +18,6 @@ public class ApiHttpClient {
     public final static String HOST_LOCAL = "192.168.17.38";
     private static String API_URL_LOCAL = "http://192.168.17.38:8080/%s";
 
-
-    // public final static String HOST = "192.168.1.46";
-    // private static String API_URL = "http://192.168.1.46/%s";
-
-
     public static final String DELETE = "DELETE";
     public static final String GET = "GET";
     public static final String POST = "POST";
@@ -40,26 +35,17 @@ public class ApiHttpClient {
         client.cancelRequests(context, true);
     }
 
-    public static void clearUserCookies(Context context) {
-         //(new HttpClientCookieStore(context)).a();
-    }
-
     public static void delete(String partUrl, AsyncHttpResponseHandler handler) {
         client.delete(getAbsoluteApiUrl(partUrl), handler);
-        log(new StringBuilder("DELETE ").append(partUrl).toString());
     }
 
     public static void get(String partUrl, AsyncHttpResponseHandler handler) {
         client.get(getAbsoluteApiUrl(partUrl), handler);
-        log(new StringBuilder("GET ").append(partUrl).toString());
     }
 
     public static void get(String partUrl, RequestParams params,
             AsyncHttpResponseHandler handler) {
         client.get(getAbsoluteApiUrl(partUrl), params, handler);
-
-        log(new StringBuilder("GET ").append(partUrl).append("&")
-                .append(params).toString());
     }
 
     /**
@@ -69,7 +55,6 @@ public class ApiHttpClient {
      */
     public static void getLocal(String partUrl, AsyncHttpResponseHandler handler) {
         client.get(getLocalAbsoluteApiUrl(partUrl), handler);
-        log(new StringBuilder("GET ").append(partUrl).toString());
     }
 
     /**
@@ -81,13 +66,10 @@ public class ApiHttpClient {
     public static void getLocal(String partUrl, RequestParams params,
                                 AsyncHttpResponseHandler handler) {
     	client.get(getLocalAbsoluteApiUrl(partUrl), params, handler);
-    	log(new StringBuilder("GET ").append(partUrl).append("&")
-    			.append(params).toString());
     }
     
     public static String getLocalAbsoluteApiUrl(String partUrl) {
         String url = String.format(API_URL_LOCAL, partUrl);
-        Log.d("BASE_CLIENT", "request:" + url);
         return url;
     }
 
@@ -103,7 +85,6 @@ public class ApiHttpClient {
 
     public static void getDirect(String url, AsyncHttpResponseHandler handler) {
         client.get(url, handler);
-        log(new StringBuilder("GET ").append(url).toString());
     }
 
     public static void log(String log) {
@@ -119,27 +100,22 @@ public class ApiHttpClient {
     public static void post(String partUrl, RequestParams params,
             AsyncHttpResponseHandler handler) {
         client.post(getAbsoluteApiUrl(partUrl), params, handler);
-        log(new StringBuilder("POST ").append(partUrl).append("&")
-                .append(params).toString());
+
     }
 
     public static void postDirect(String url, RequestParams params,
             AsyncHttpResponseHandler handler) {
         client.post(url, params, handler);
-        log(new StringBuilder("POST ").append(url).append("&").append(params)
-                .toString());
+
     }
 
     public static void put(String partUrl, AsyncHttpResponseHandler handler) {
         client.put(getAbsoluteApiUrl(partUrl), handler);
-        log(new StringBuilder("PUT ").append(partUrl).toString());
     }
 
     public static void put(String partUrl, RequestParams params,
             AsyncHttpResponseHandler handler) {
         client.put(getAbsoluteApiUrl(partUrl), params, handler);
-        log(new StringBuilder("PUT ").append(partUrl).append("&")
-                .append(params).toString());
     }
 
     public static void setApiUrl(String apiUrl) {

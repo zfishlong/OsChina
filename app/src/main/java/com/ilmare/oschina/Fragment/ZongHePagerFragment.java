@@ -13,15 +13,17 @@ import com.ilmare.oschina.R;
  * 创建时间：6/15/2016 11:52 PM
  * 版本号： 1.0
  * 版权所有(C) 6/15/2016
- * 描述：综合界面-->
+ * 描述：综合界面-->设置ViewPager中四个Fragment中的数据
  * ===============================
  */
 public class ZongHePagerFragment extends BaseViewPagerFragment {
 
     private String[] stringArray;
 
+    //设置数据
     @Override
     public void setPagerData(BaseViewPagerAdapter fragmentAdapter) {
+        //获取到名称
         stringArray = getActivity().getResources().getStringArray(R.array.news_viewpage_arrays);
         fragmentAdapter.setPagerData(new FragmentInfo(AllNewsFragment.class,getBundle(stringArray[0])), stringArray[0]);
         fragmentAdapter.setPagerData(new FragmentInfo(HotNewsFragment.class,getBundle(stringArray[1])), stringArray[1]);
@@ -30,6 +32,7 @@ public class ZongHePagerFragment extends BaseViewPagerFragment {
     }
 
 
+    //传递数据
     private Bundle getBundle(String catalog) {
         Bundle bundle = new Bundle();
         if(catalog.equals(stringArray[2])){

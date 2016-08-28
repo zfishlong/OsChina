@@ -20,18 +20,20 @@ import java.io.Serializable;
  * 创建时间：6/16/2016 12:38 PM
  * 版本号： 1.0
  * 版权所有(C) 6/16/2016
- * 描述：
+ * 描述：博客界面 -->博客 、推荐 共用这个界面
+ * 根据传递过来的参数不同 区分界面
  * ===============================
  */
-public class BlogNewsFragment extends BaseListViewFragment implements AdapterView.OnItemClickListener {
+public class BlogNewsFragment extends BaseListViewFragment
+        implements AdapterView.OnItemClickListener {
 
-    private String blogType;
+
     private BlogList blogList;
     private BlogListAdapter blogListAdapter;
-    public static final String BUNDLE_BLOG_TYPE = "BUNDLE_BLOG_TYPE";
-    private static final String CACHE_KEY_PREFIX = "bloglist_";
-    private boolean isLoadMore=false;
-
+    public static final String BUNDLE_BLOG_TYPE = "BUNDLE_BLOG_TYPE"; //
+    private static final String CACHE_KEY_PREFIX = "bloglist_";        //缓存前缀
+    private boolean isLoadMore=false;                               //加载更多
+    private String blogType;                                        //博客类型
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,12 +113,11 @@ public class BlogNewsFragment extends BaseListViewFragment implements AdapterVie
         Blog blog = (Blog) blogListAdapter.getItem(position);
 
         if (blog != null) {
-            UIHelper.showBlogDetail(getActivity(), blog.getId(),
-                    blog.getCommentCount());
+            //切换到详情界面
+            UIHelper.showBlogDetail(getActivity(), blog.getId(), blog.getCommentCount());
 
             //TODO 保存到已读列表
-//            saveToReadedList(view, BlogList.PREF_READED_BLOG_LIST, blog.getId()
-//                    + "");
+            //saveToReadedList(view, BlogList.PREF_READED_BLOG_LIST, blog.getId()+ "");
         }
     }
 }

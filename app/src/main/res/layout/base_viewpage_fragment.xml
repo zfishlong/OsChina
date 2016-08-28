@@ -8,6 +8,7 @@
     <!-- 导航标题栏 -->
 
     <com.ilmare.oschina.Widget.PagerSlidingTab
+        android:foregroundGravity="center"
         android:id="@+id/pager_tabstrip"
         android:layout_width="match_parent"
         android:layout_height="45dp"

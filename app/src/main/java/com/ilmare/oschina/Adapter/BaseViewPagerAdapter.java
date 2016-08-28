@@ -13,17 +13,19 @@ import java.util.ArrayList;
  * 创建时间：6/15/2016 11:33 PM
  * 版本号： 1.0
  * 版权所有(C) 6/15/2016
- * 描述：
+ * 描述：BaseListViewPagerFragment的适配器
  * ===============================
  */
 
 public class BaseViewPagerAdapter extends FragmentPagerAdapter {
 
-   private ArrayList<FragmentInfo> fragmentInfos;
+    private ArrayList<FragmentInfo> fragmentInfos;
 
     private  ArrayList<String> titles;
 
+
     private Context mContext;
+
     public BaseViewPagerAdapter(Context mContext,FragmentManager fm) {
         super(fm);
         this.mContext=mContext;
@@ -40,6 +42,7 @@ public class BaseViewPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         FragmentInfo info=fragmentInfos.get(position);
+        // 创建一个Fragment并返回
         return Fragment.instantiate(mContext,info.getClazz().getName(),info.getBundle()) ;
     }
 
@@ -47,6 +50,9 @@ public class BaseViewPagerAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return titles.size();
     }
+
+
+
 
     @Override
     public CharSequence getPageTitle(int position) {
