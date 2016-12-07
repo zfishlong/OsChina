@@ -3,7 +3,7 @@ package com.ilmare.oschina.Base;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.LayoutParams;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -22,7 +22,7 @@ import com.ilmare.oschina.Utils.TDevice;
  * ===============================
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends ActionBarActivity {
 
     private ActionBar supportActionBar;
     private TextView mTvActionTitle;

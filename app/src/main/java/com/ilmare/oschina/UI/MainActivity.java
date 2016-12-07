@@ -7,8 +7,9 @@ import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,7 +29,7 @@ import butterknife.InjectView;
 /**
  *  主界面
  */
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends ActionBarActivity
         implements DrawerLayout.DrawerListener,
         DrawerFragment.OnDrawerItemSelectedListener, View.OnClickListener, View.OnTouchListener {
 
@@ -142,7 +143,7 @@ public class MainActivity extends AppCompatActivity
         navigationDrawer.setOnDrawerItemSelectedListener(this);
 
         //添加抽屉的监听
-        drawerLayout.addDrawerListener(this);
+        //drawerLayout.addDrawerListener(this);
 
         //初始化开关，并和drawer关联
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
